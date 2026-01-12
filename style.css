@@ -1,5 +1,6 @@
 /* ==========================================================
   COMPTEUR+ — PLUG & PLAY (HORIZONTAL) — SUPER DUPPER vFINAL
+  ✅ KIOSK HARD-LOCK for Fully Kiosk / WebView (prevents zoom + overflow)
   ✅ Fix: Big QR now has top/bottom padding (no touching frame lines)
   ✅ Fix: Left logo top aligned with QR top (true symmetry)
   ✅ Fix: TikTok holder pure black (no inner square)
@@ -30,34 +31,73 @@
 }
 
 *{ box-sizing:border-box; }
-html,body{ height:100%; }
+
+/* ==========================================================
+   ✅ KIOSK HARD-LOCK (CRITICAL)
+   Fully Kiosk / Android WebView may auto-zoom text/layout.
+   These rules force stable 1280×800 rendering with scale-to-fit.
+========================================================== */
+
+html, body{
+  width:100%;
+  height:100%;
+  margin:0;
+  overflow:hidden !important;
+  touch-action: manipulation;
+
+  /* Prevent WebView font autoscaling */
+  -webkit-text-size-adjust: 100% !important;
+  text-size-adjust: 100% !important;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
 body{
-  margin:0;
   background:
     radial-gradient(1000px 600px at 50% 40%, rgba(255,255,255,0.07), rgba(0,0,0,0) 62%),
     radial-gradient(900px 520px at 70% 95%, rgba(255,212,0,0.07), rgba(0,0,0,0) 62%),
     linear-gradient(180deg, #040406, #06060b 70%, #040406),
     var(--bg);
-  display:grid;
-  place-items:center;
-  overflow:hidden;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+
+  /* Use flex so scaling is rock-solid */
+  display:flex;
+  align-items:center;
+  justify-content:center;
   color:var(--text);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
 }
 
-.stage{ width:min(1280px, 98vw); }
+/* Fixed design canvas */
+.stage{
+  width:1280px;
+  height:auto;
+  max-width:1280px;
 
+  /* Scale-to-fit safety net (prevents clipping in WebView) */
+  transform-origin:center center;
+  transform: scale(
+    min(
+      1,
+      calc(100vw / 1280),
+      calc(100vh / 800)
+    )
+  );
+}
+
+/* Keep the same physical “device” every time */
 .device{
-  width:100%;
-  aspect-ratio: 16/10;
+  width:1280px;
+  height:800px;
+  aspect-ratio:auto;
+
   background:
     radial-gradient(1400px 700px at 50% 0%, rgba(255,255,255,0.08), rgba(0,0,0,0) 60%),
     radial-gradient(900px 520px at 18% 95%, rgba(255,212,0,0.06), rgba(0,0,0,0) 62%),
     linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.26)),
     var(--panel);
+
   border:1px solid rgba(255,255,255,0.12);
   border-radius: 34px;
   box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.10);
@@ -389,7 +429,7 @@ body.live .hint{ display:none; }
   width:100%;
   display:grid;
   grid-template-columns: 0.90fr 1.10fr;
-  align-items:center; /* ✅ keep grid centered */
+  align-items:center;
   gap: 44px;
   padding: 0 56px;
 }
@@ -403,10 +443,7 @@ body.live .hint{ display:none; }
   height:100%;
 }
 
-/* ✅ QR scan safety:
-   - darker frame increases camera exposure contrast
-   - QR image stays pure white
-*/
+/* QR frame: dark/high contrast for camera */
 .qrBigWrap{
   position:relative;
   width: var(--qrBox);
@@ -414,45 +451,44 @@ body.live .hint{ display:none; }
   border-radius: 34px;
   padding: var(--qrBoxPad);
   border:1px solid rgba(255,255,255,0.16);
-  background: rgba(0,0,0,0.60); /* ✅ darker = better scanning */
+  background: rgba(0,0,0,0.60);
   box-shadow: 0 34px 110px rgba(0,0,0,0.72);
   overflow:hidden;
   display:grid;
   place-items:center;
 }
 
+/* QR scan zone must be PERFECT white */
 .qrBigImg{
   width:100%;
   height:100%;
   object-fit:contain;
   border-radius: 24px;
-
-  /* ✅ pure scan zone */
   background:#fff !important;
   padding: var(--qrInnerPad);
   filter:none !important;
 }
 
-/* LEFT: exact reference box = QR box height (true top alignment) */
+/* LEFT: reference box matches QR height => top alignment */
 .qrLeftStack{
-  align-self:center;             /* centers the reference box */
-  height: var(--qrBox);          /* ✅ exact match */
+  align-self:center;
+  height: var(--qrBox);
   display:flex;
   flex-direction:column;
-  justify-content:flex-start;    /* logo starts at top */
+  justify-content:flex-start;
   align-items:center;
   text-align:center;
   gap: 18px;
   max-width: 560px;
 }
 
-/* TikTok holder PURE BLACK (premium + no inner square look) */
+/* TikTok holder PURE BLACK */
 .qrLogoFrame{
   width: clamp(190px, calc(var(--qrBox) * 0.33), 230px);
   height: clamp(190px, calc(var(--qrBox) * 0.33), 230px);
   border-radius: 54px;
   border:1px solid rgba(255,255,255,0.16);
-  background: #000 !important; /* ✅ pure black */
+  background: #000 !important;
   display:grid;
   place-items:center;
   box-shadow: 0 22px 70px rgba(0,0,0,0.72);
@@ -512,7 +548,7 @@ body.live .hint{ display:none; }
 .qrDot{ opacity:0.45; padding: 0 12px; }
 .qrNoteEN{ color: rgba(255,255,255,0.58); }
 
-/* QR ambient pulse (safe: does not affect scan zone) */
+/* QR ambient pulse (scan safe) */
 .qrPulse{
   position:absolute;
   inset:-26%;
