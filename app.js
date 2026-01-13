@@ -1,11 +1,3 @@
-/* ==========================================================
-  COMPTEUR+ — PLUG & PLAY (HORIZONTAL) — TABLET SAFE SCALE
-  FILE 3/3 — app.js
-  ✅ FIX: Pixel-perfect scaling using visualViewport (Android safe)
-  ✅ FIX: “Prêt” translates (readyTxt is now updated)
-  ✅ DEBUG: ?debug=1 shows safe frame + outlines
-========================================================== */
-
 document.addEventListener("DOMContentLoaded", () => {
 
   const CONFIG = {
