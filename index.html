@@ -1,7 +1,7 @@
 <!-- ==========================================================
   COMPTEUR+ — PLUG & PLAY (HORIZONTAL)
   FILE 1/3 — index.html
-  ✅ Kiosk-safe 1280×800 canvas
+  Includes: Activation Screen + Counter + QR Takeover
 ========================================================== -->
 
 <!doctype html>
@@ -10,14 +10,16 @@
   <meta charset="utf-8"/>
   <meta name="viewport"
         content="width=1280,height=800,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover"/>
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#050508">
+
   <title>Compteur+</title>
   <link rel="stylesheet" href="./style.css"/>
 </head>
 
 <body>
-  <!-- STAGE = fixed design canvas (1280 wide) -->
   <div class="stage" id="stage">
-    <!-- DEVICE = fixed 1280×800 internal layout -->
     <div class="device" id="device">
 
       <!-- TOP BAR -->
@@ -113,9 +115,10 @@
                   <div class="actQrPulse" aria-hidden="true"></div>
                 </div>
 
-                <div class="actStatus" id="actStatus">
-                  <span class="statusDot"></span>
-                  <span class="statusTxt" id="statusTxt">Connexion…</span>
+                <!-- ✅ BEAUTIFUL READY PILL (PRET) -->
+                <div class="readyPill" id="readyPill">
+                  <span class="readyDot"></span>
+                  <span class="readyTxt" id="readyTxt">Prêt</span>
                 </div>
 
               </div>
@@ -125,7 +128,7 @@
         </section>
 
         <!-- COUNTER VIEW -->
-        <section class="view viewCounter" id="viewCounter" aria-label="Counter">
+        <section class="view viewCounter" id="viewCounter" aria-label="Counter view">
           <div class="card counterCard" id="counterWrap">
 
             <div class="ambientGrid"></div>
@@ -207,10 +210,12 @@
               </div>
 
             </div>
+
           </div>
         </section>
 
       </main>
+
     </div>
   </div>
 
