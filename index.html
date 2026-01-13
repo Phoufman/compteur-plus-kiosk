@@ -1,225 +1,116 @@
-<!-- ==========================================================
-  COMPTEUR+ — PLUG & PLAY (HORIZONTAL)
-  FILE 1/3 — index.html
-  Includes: Activation Screen + Counter + QR Takeover
-========================================================== -->
+<!-- COMPTEUR+ — CODEPEN SINGLE FILE HTML -->
+<div class="stage">
+  <div class="stageInner">
+    <div class="device" id="device">
 
-<!doctype html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport"
-      content="width=1280, height=800, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover"/>
-  <title>Compteur+</title>
-  <link rel="stylesheet" href="./style.css"/>
-</head>
+      <!-- TOP BAR -->
+      <header class="topbarMinimal">
+        <div class="demoBadge" id="demoBadge">
+          <span class="demoDot"></span>
+          <span class="demoTxt">DEMO</span>
+        </div>
 
-<body>
-  <div class="stage">
-    <div class="stageInner">
-      <div class="device" id="device">
-
-        <!-- TOP BAR -->
-        <header class="topbarMinimal">
-          <div class="demoBadge" id="demoBadge">
-            <span class="demoDot"></span>
-            <span class="demoTxt">DEMO</span>
+        <div class="brandCenter">
+          <div class="brand" aria-label="Compteur Plus">
+            compteur<span class="brandPlus" id="brandPlus">+</span>
           </div>
+        </div>
 
-          <div class="brandCenter">
-            <div class="brand" aria-label="Compteur Plus">
-              compteur<span class="brandPlus" id="brandPlus">+</span>
+        <div class="pillWeatherBig show" id="weatherPill">
+          <span class="pillKey">TEMP</span>
+          <span class="pillDot">·</span>
+          <span class="pillVal big" id="weatherText">—</span>
+        </div>
+      </header>
+
+      <!-- MAIN STAGE -->
+      <main class="mainStage" id="mainStage">
+
+        <!-- ACTIVATION VIEW -->
+        <section class="view viewActivate" id="viewActivate" aria-label="Activation">
+          <div class="card activationCard" id="activationCard">
+
+            <div class="ambientGrid"></div>
+            <div class="ambientOrb orbA"></div>
+            <div class="ambientOrb orbB"></div>
+            <div class="glassSheen"></div>
+            <div class="grain"></div>
+
+            <div class="activateWrap">
+
+              <!-- LEFT -->
+              <div class="activateLeft">
+                <div class="activateTitle" id="activateTitle">ACTIVATION</div>
+
+                <div class="activateSub" id="activateSub">
+                  BRANCHEZ L’APPAREIL, PUIS ACTIVEZ-LE EN 30 SECONDES.
+                </div>
+
+                <div class="activateSteps">
+                  <div class="step">
+                    <div class="stepNum">1</div>
+                    <div class="stepTxt" id="step1Txt">Ouvrez le portail Compteur+ sur votre téléphone ou ordinateur.</div>
+                  </div>
+
+                  <div class="step">
+                    <div class="stepNum">2</div>
+                    <div class="stepTxt" id="step2Txt">Entrez le code d’activation.</div>
+                  </div>
+
+                  <div class="step">
+                    <div class="stepNum">3</div>
+                    <div class="stepTxt" id="step3Txt">Choisissez votre plateforme et collez le lien de votre réseau social.</div>
+                  </div>
+                </div>
+
+                <div class="activateBottom">
+                  <div class="portalLine" id="portalLine">
+                    <span class="portalKey">PORTAIL</span>
+                    <span class="portalDot">·</span>
+                    <span class="portalVal" id="portalUrlText">compteurplus.com</span>
+                  </div>
+
+                  <div class="langPill" id="langPill" role="button" tabindex="0" aria-label="Toggle language">
+                    <span class="langKey">LANG</span>
+                    <span class="langDot">·</span>
+                    <span class="langVal" id="langVal">FR</span>
+                  </div>
+                </div>
+
+                <div class="hotkeysLine" id="hotkeysLine">
+                  Hotkeys: A Activation · C Counter · Q QR · I/F/G/T Platforms · L Lang
+                </div>
+              </div>
+
+              <!-- RIGHT -->
+              <div class="activateRight">
+
+                <div class="codeCard">
+                  <div class="codeLabel" id="codeLabel">CODE D’ACTIVATION</div>
+                  <div class="codeValue" id="activationCode">533 608</div>
+                  <div class="codeSub" id="codeSub">Valide pour 10 minutes</div>
+                </div>
+
+                <div class="actQRWrap">
+                  <img id="activationQrImg" class="activationQrImg"
+                       src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https://compteurplus.com"
+                       alt="Activation QR"/>
+                  <div class="actQrPulse" aria-hidden="true"></div>
+                </div>
+
+                <div class="actStatus" id="actStatus">
+                  <span class="statusDot"></span>
+                  <span class="statusTxt" id="statusTxt">Connexion…</span>
+                </div>
+
+              </div>
             </div>
+
           </div>
+        </section>
 
-          <div class="pillWeatherBig" id="weatherPill">
-            <span class="pillKey">TEMP</span>
-            <span class="pillDot">·</span>
-            <span class="pillVal big" id="weatherText">—</span>
-          </div>
-        </header>
+      </main>
 
-        <!-- MAIN STAGE -->
-        <main class="mainStage" id="mainStage">
-
-          <!-- ACTIVATION VIEW -->
-          <section class="view viewActivate" id="viewActivate" aria-label="Activation">
-            <div class="card activationCard" id="activationCard">
-
-              <div class="ambientGrid"></div>
-              <div class="ambientOrb orbA"></div>
-              <div class="ambientOrb orbB"></div>
-              <div class="glassSheen"></div>
-              <div class="grain"></div>
-
-              <div class="activateWrap">
-
-                <!-- LEFT -->
-                <div class="activateLeft">
-                  <div class="activateTitle" id="activateTitle">ACTIVATION</div>
-
-                  <div class="activateSub" id="activateSub">
-                    BRANCHEZ L’APPAREIL, PUIS ACTIVEZ-LE EN 30 SECONDES.
-                  </div>
-
-                  <div class="activateSteps">
-                    <div class="step">
-                      <div class="stepNum">1</div>
-                      <div class="stepTxt" id="step1Txt">
-                        Ouvrez le portail Compteur+ sur votre téléphone ou ordinateur.
-                      </div>
-                    </div>
-
-                    <div class="step">
-                      <div class="stepNum">2</div>
-                      <div class="stepTxt" id="step2Txt">Entrez le code d’activation.</div>
-                    </div>
-
-                    <div class="step">
-                      <div class="stepNum">3</div>
-                      <div class="stepTxt" id="step3Txt">
-                        Choisissez votre plateforme et collez le lien de votre réseau social.
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="activateBottom">
-                    <div class="portalLine" id="portalLine">
-                      <span class="portalKey">PORTAIL</span>
-                      <span class="portalDot">·</span>
-                      <span class="portalVal" id="portalUrlText">compteurplus.com</span>
-                    </div>
-
-                    <div class="langPill" id="langPill" role="button" tabindex="0" aria-label="Toggle language">
-                      <span class="langKey">LANG</span>
-                      <span class="langDot">·</span>
-                      <span class="langVal" id="langVal">FR</span>
-                    </div>
-                  </div>
-
-                  <div class="hotkeysLine" id="hotkeysLine">
-                    Hotkeys: A Activation · C Counter · Q QR · I/F/G/T Platforms · L Lang
-                  </div>
-                </div>
-
-                <!-- RIGHT -->
-                <div class="activateRight">
-
-                  <div class="codeCard">
-                    <div class="codeLabel" id="codeLabel">CODE D’ACTIVATION</div>
-                    <div class="codeValue" id="activationCode">— — — — — —</div>
-                    <div class="codeSub" id="codeSub">Valide pour 10 minutes</div>
-                  </div>
-
-                  <div class="actQRWrap">
-                    <img id="activationQrImg" class="activationQrImg" alt="Activation QR"/>
-                    <div class="actQrPulse" aria-hidden="true"></div>
-                  </div>
-
-                  <div class="actStatus" id="actStatus">
-                    <span class="statusDot"></span>
-                    <span class="statusTxt" id="statusTxt">Connexion…</span>
-                  </div>
-
-                </div>
-
-              </div>
-            </div>
-          </section>
-
-          <!-- COUNTER VIEW -->
-          <section class="view viewCounter" id="viewCounter">
-            <div class="card counterCard" id="counterWrap">
-
-              <div class="ambientGrid"></div>
-              <div class="ambientOrb orbA"></div>
-              <div class="ambientOrb orbB"></div>
-              <div class="glassSheen"></div>
-              <div class="grain"></div>
-
-              <div class="cardHeader" id="cardHeader">
-                <div class="platformBlock">
-                  <div class="platformIconWrap" id="platformIconWrap">
-                    <img id="platformIcon" class="platformIcon" alt="Platform icon"/>
-                  </div>
-
-                  <div class="platformText">
-                    <div id="labelFR" class="labelFR">ABONNÉS INSTAGRAM</div>
-                    <div id="labelEN" class="labelEN">INSTAGRAM FOLLOWERS</div>
-                  </div>
-                </div>
-
-                <div class="miniQR">
-                  <img id="qrSmallImg" class="qrSmallImg" alt="QR code small"/>
-                </div>
-              </div>
-
-              <div class="counter" id="counter" aria-label="Counter digits"></div>
-
-              <div class="hint" id="footerHint">
-                D Demo/Live · R Rotate · I/F/G/T Platforms · Space +1 · Q QR · A Activation
-              </div>
-
-            </div>
-          </section>
-
-          <!-- QR TAKEOVER VIEW -->
-          <section class="view viewQR" id="viewQR" aria-label="QR takeover">
-            <div class="card qrCard" id="qrCard">
-
-              <div class="ambientGrid"></div>
-              <div class="ambientOrb orbA"></div>
-              <div class="ambientOrb orbB"></div>
-              <div class="glassSheen"></div>
-              <div class="grain"></div>
-
-              <div class="qrTakeoverFinal">
-
-                <!-- LEFT -->
-                <div class="qrLeftStack">
-                  <div class="qrLogoBig">
-                    <div class="qrLogoFrame">
-                      <img id="qrPlatIconBig" class="qrPlatIconBig" alt="platform"/>
-                    </div>
-                  </div>
-
-                  <div class="qrLabelBlock">
-                    <div id="qrPlatNameFR" class="qrPlatNameFR">ABONNÉS INSTAGRAM</div>
-                    <div id="qrPlatNameEN" class="qrPlatNameEN">INSTAGRAM FOLLOWERS</div>
-                  </div>
-
-                  <div class="qrDirective">
-                    <div class="qrFR" id="qrFR">SCANNEZ POUR SUIVRE</div>
-                    <div class="qrEN" id="qrEN">SCAN TO FOLLOW</div>
-                  </div>
-
-                  <div class="qrFooter">
-                    <span class="qrNoteFR" id="qrNoteFR">Ouvrez votre caméra et scannez</span>
-                    <span class="qrDot">·</span>
-                    <span class="qrNoteEN" id="qrNoteEN">Open your camera and scan</span>
-                  </div>
-                </div>
-
-                <!-- RIGHT -->
-                <div class="qrRightHuge">
-                  <div class="qrBigWrap">
-                    <img id="qrBigImg" class="qrBigImg" alt="QR code big"/>
-                    <div class="qrPulse" aria-hidden="true"></div>
-                    <div class="qrSweep" aria-hidden="true"></div>
-                  </div>
-                </div>
-
-              </div>
-
-            </div>
-          </section>
-
-        </main>
-
-      </div> <!-- end .device -->
-    </div>   <!-- end .stageInner -->
-  </div>     <!-- end .stage -->
-
-  <script src="./app.js"></script>
-</body>
-</html>
+    </div>
+  </div>
+</div>
