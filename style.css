@@ -1,8 +1,9 @@
 /* ==========================================================
-  COMPTEUR+ — PLUG & PLAY (HORIZONTAL) — KIOSK FINAL
-  ✅ Fully Kiosk / Android WebView safe
-  ✅ Stable 1280×800 scaling
-  ✅ Activation / Counter / QR fully styled
+  COMPTEUR+ — PLUG & PLAY (HORIZONTAL) — SUPER DUPPER vFINAL
+  ✅ FIXED 1280×800 CANVAS (tablet WebView safe)
+  ✅ Forces SCALE-TO-FIT (no crop / no huge activation)
+  ✅ Prevents text autoscaling + zoom mess
+  ✅ “Prêt” pill premium + centered like before
 ========================================================== */
 
 :root{
@@ -27,64 +28,67 @@
 
 *{ box-sizing:border-box; }
 
-html,body{
-  width:100%;
-  height:100%;
-  margin:0;
+html, body{
+  width:100vw !important;
+  height:100vh !important;
+  margin:0 !important;
   overflow:hidden !important;
-  -webkit-text-size-adjust:100% !important;
-  text-size-adjust:100% !important;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-  color:var(--text);
+
+  /* Prevent WebView text autoscaling */
+  -webkit-text-size-adjust: 100% !important;
+  text-size-adjust: 100% !important;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* ✅ background */
+/* Prevent Fully / system from shifting layout */
 body{
+  position: fixed !important;
+  inset: 0 !important;
   background:
     radial-gradient(1000px 600px at 50% 40%, rgba(255,255,255,0.07), rgba(0,0,0,0) 62%),
     radial-gradient(900px 520px at 70% 95%, rgba(255,212,0,0.07), rgba(0,0,0,0) 62%),
     linear-gradient(180deg, #040406, #06060b 70%, #040406),
     var(--bg);
-
   display:flex;
   align-items:center;
   justify-content:center;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  color:var(--text);
 }
 
-/* ✅ wrapper */
-.kioskWrap{
-  width:100%;
-  height:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+@supports (padding: env(safe-area-inset-top)){
+  body{
+    padding: env(safe-area-inset-top) env(safe-area-inset-right)
+             env(safe-area-inset-bottom) env(safe-area-inset-left) !important;
+  }
 }
 
-/* ✅ fixed design stage with scaling */
+/* ✅ FIXED DESIGN CANVAS — ALWAYS SCALE DOWN TO FIT */
 .stage{
-  width:1280px;
-  height:800px;
+  width:1280px !important;
+  height:800px !important;
+  transform-origin:center center !important;
 
-  transform-origin:center center;
-  transform: scale(
+  transform: translateZ(0) scale(
     min(
       1,
       calc(100vw / 1280),
       calc(100vh / 800)
     )
-  );
+  ) !important;
 }
 
+/* Device stays consistent */
 .device{
-  width:1280px;
-  height:800px;
-
+  width:1280px !important;
+  height:800px !important;
   background:
     radial-gradient(1400px 700px at 50% 0%, rgba(255,255,255,0.08), rgba(0,0,0,0) 60%),
     radial-gradient(900px 520px at 18% 95%, rgba(255,212,0,0.06), rgba(0,0,0,0) 62%),
     linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.26)),
     var(--panel);
-
   border:1px solid rgba(255,255,255,0.12);
   border-radius: 34px;
   box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.10);
@@ -125,8 +129,11 @@ body{
   font-weight: 1000;
   letter-spacing: 1.4px;
 }
-
-.brandCenter{ justify-self:center; }
+body.live #demoBadge{
+  visibility:hidden;
+  opacity:0;
+  pointer-events:none;
+}
 
 .brand{
   font-size: 66px;
@@ -139,6 +146,14 @@ body{
   margin-left: 3px;
   display:inline-block;
   text-shadow: 0 0 14px rgba(255,212,0,0.22), 0 0 56px rgba(255,212,0,0.12);
+  will-change: transform, filter;
+}
+.brandPlus.pulse{ animation: plusPulse 620ms cubic-bezier(.2,1,.2,1) both; }
+@keyframes plusPulse{
+  0%{ transform:scale(1); filter:brightness(1); }
+  35%{ transform:scale(1.18); filter:brightness(1.35); }
+  70%{ transform:scale(1.06); filter:brightness(1.18); }
+  100%{ transform:scale(1); filter:brightness(1); }
 }
 
 .pillWeatherBig{
@@ -163,26 +178,34 @@ body{
 .pillVal.big{ font-size: 42px; font-weight: 1000; }
 
 /* ==========================================================
-   MAIN STAGE / VIEWS
+   STAGE + VIEWS
 ========================================================== */
 
-.mainStage{
-  position:relative;
-  height: calc(100% - 104px);
-}
+.mainStage{ position:relative; height: calc(100% - 104px); }
 
 .view{
   position:absolute;
   inset:0;
-  opacity:0;
-  pointer-events:none;
-  transition: opacity 360ms ease;
+  transition: opacity 560ms cubic-bezier(.2,1,.2,1),
+              transform 560ms cubic-bezier(.2,1,.2,1);
+  will-change: opacity, transform;
 }
 
-/* ✅ default view */
-.mainStage.showActivate #viewActivate{ opacity:1; pointer-events:auto; }
-.mainStage.showCounter  #viewCounter{ opacity:1; pointer-events:auto; }
-.mainStage.showQR       #viewQR{ opacity:1; pointer-events:auto; }
+.viewActivate{ opacity:0; transform: translateY(14px) scale(0.99); pointer-events:none; }
+.viewCounter{  opacity:0; transform: translateY(10px) scale(0.99); pointer-events:none; }
+.viewQR{       opacity:0; transform: translateY(20px) scale(0.985); pointer-events:none; }
+
+.mainStage.showActivate .viewActivate{ opacity:1; transform: translateY(0) scale(1); pointer-events:auto; }
+.mainStage.showActivate .viewCounter,
+.mainStage.showActivate .viewQR{ opacity:0; pointer-events:none; transform: translateY(-10px) scale(0.985); }
+
+.mainStage.showCounter .viewCounter{ opacity:1; transform: translateY(0) scale(1); pointer-events:auto; }
+.mainStage.showCounter .viewActivate,
+.mainStage.showCounter .viewQR{ opacity:0; pointer-events:none; }
+
+.mainStage.showQR .viewCounter{ opacity:0; transform: translateY(-18px) scale(0.985); pointer-events:none; }
+.mainStage.showQR .viewQR{ opacity:1; transform: translateY(0) scale(1); pointer-events:auto; }
+.mainStage.showQR .viewActivate{ opacity:0; pointer-events:none; }
 
 .card{
   position:relative;
@@ -195,7 +218,10 @@ body{
   isolation:isolate;
 }
 
-/* ambient */
+/* ==========================================================
+   AMBIENT
+========================================================== */
+
 .ambientGrid{
   position:absolute;
   inset:-40%;
@@ -208,6 +234,7 @@ body{
   z-index:1;
   pointer-events:none;
 }
+
 .ambientOrb{
   position:absolute;
   width: 920px; height: 920px;
@@ -216,9 +243,11 @@ body{
   opacity:0.12;
   z-index:1;
   pointer-events:none;
+  animation: orbFloat 12s ease-in-out infinite;
 }
 .orbA{ left:-380px; top:-460px; background: radial-gradient(circle, rgba(255,212,0,0.20), rgba(0,0,0,0) 60%); }
-.orbB{ right:-440px; bottom:-560px; background: radial-gradient(circle, rgba(255,255,255,0.14), rgba(0,0,0,0) 62%); }
+.orbB{ right:-440px; bottom:-560px; background: radial-gradient(circle, rgba(255,255,255,0.14), rgba(0,0,0,0) 62%); animation-delay:-6s; }
+@keyframes orbFloat{ 0%,100%{ transform:translateY(0)} 50%{ transform:translateY(18px)} }
 
 .glassSheen{
   position:absolute;
@@ -230,6 +259,27 @@ body{
     linear-gradient(180deg, rgba(0,0,0,0.10), rgba(0,0,0,0.50));
 }
 
+.counterCard::before,
+.qrCard::before,
+.activationCard::before{
+  content:"";
+  position:absolute;
+  inset:-25%;
+  z-index:2;
+  pointer-events:none;
+  background:
+    radial-gradient(1100px 720px at 40% 52%, var(--plat2), rgba(0,0,0,0) 62%),
+    radial-gradient(780px 620px at 70% 40%, var(--plat), rgba(0,0,0,0) 68%);
+  filter: blur(16px);
+  mix-blend-mode: screen;
+  opacity:0.95;
+  animation: drift 20s ease-in-out infinite;
+}
+@keyframes drift{
+  0%,100%{ transform: translate3d(0,0,0); }
+  50%{ transform: translate3d(22px,-10px,0); }
+}
+
 .grain{
   position:absolute;
   inset:0;
@@ -238,16 +288,15 @@ body{
   opacity:0.06;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
   mix-blend-mode: overlay;
-  z-index:5;
 }
 
 /* ==========================================================
-   ✅ ACTIVATION VIEW (THE IMPORTANT PART)
+   ACTIVATION
 ========================================================== */
 
 .activateWrap{
   position:relative;
-  z-index:10;
+  z-index:12;
   height:100%;
   width:100%;
   display:grid;
@@ -255,6 +304,14 @@ body{
   gap: 34px;
   padding: 46px 54px;
   align-items:center;
+}
+
+.activateLeft{
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  gap: 18px;
+  min-width: 0;
 }
 
 .activateTitle{
@@ -280,7 +337,7 @@ body{
   display:flex;
   flex-direction:column;
   gap: 14px;
-  margin-top: 18px;
+  margin-top: 8px;
   max-width: 860px;
 }
 
@@ -296,24 +353,64 @@ body{
 }
 
 .stepNum{
-  width: 44px;
-  height: 44px;
+  width: 34px;
+  height: 34px;
   border-radius: 999px;
   display:grid;
   place-items:center;
   font-weight: 1000;
-  font-size: 16px;
+  font-size: 14px;
   color: rgba(255,212,0,0.95);
   border:1px solid rgba(255,212,0,0.22);
   background: rgba(255,212,0,0.06);
+  flex: 0 0 auto;
 }
 
 .stepTxt{
-  font-size: 18px;
-  font-weight: 900;
-  letter-spacing: 0.2px;
-  color: rgba(255,255,255,0.88);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  color: rgba(255,255,255,0.86);
   line-height: 1.25;
+  min-width:0;
+}
+
+.activateBottom{
+  margin-top: 10px;
+  display:flex;
+  align-items:center;
+  gap: 14px;
+  flex-wrap:wrap;
+}
+
+.portalLine,
+.langPill{
+  display:inline-flex;
+  align-items:center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 999px;
+  border:1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.18);
+  backdrop-filter: blur(10px);
+}
+.portalKey,.langKey{ color: rgba(255,255,255,0.40); font-weight: 1000; font-size: 11px; letter-spacing:1px; }
+.portalDot,.langDot{ opacity:0.45; font-weight: 1000; }
+.portalVal,.langVal{ font-weight: 1000; letter-spacing: 1.2px; }
+
+.hotkeysLine{
+  margin-top: 8px;
+  font-size: 11px;
+  letter-spacing: 0.85px;
+  color: rgba(255,255,255,0.22);
+}
+
+.activateRight{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap: 18px;
 }
 
 .codeCard{
@@ -327,14 +424,28 @@ body{
   backdrop-filter: blur(10px);
 }
 
+.codeLabel{
+  font-size: 12px;
+  font-weight: 1000;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.78);
+}
 .codeValue{
   margin-top: 10px;
   font-size: 52px;
   font-weight: 1000;
   letter-spacing: 6px;
 }
+.codeSub{
+  margin-top: 8px;
+  font-size: 12px;
+  letter-spacing: 0.8px;
+  color: rgba(255,255,255,0.55);
+}
 
 .actQRWrap{
+  position:relative;
   width: 320px;
   height: 320px;
   border-radius: 26px;
@@ -344,8 +455,8 @@ body{
   box-shadow: 0 28px 90px rgba(0,0,0,0.62);
   display:grid;
   place-items:center;
+  overflow:hidden;
 }
-
 .activationQrImg{
   width:100%;
   height:100%;
@@ -355,9 +466,185 @@ body{
   padding: 10px;
 }
 
+.actQrPulse{
+  position:absolute;
+  inset:-30%;
+  border-radius:999px;
+  background: radial-gradient(circle, rgba(255,212,0,0.10), rgba(0,0,0,0) 62%);
+  filter: blur(18px);
+  animation: qrBreath 2.2s ease-in-out infinite;
+}
+
+/* ✅ PRET — BEAUTIFUL like before */
+.readyPill{
+  margin-top: -2px;
+  display:inline-flex;
+  align-items:center;
+  gap: 10px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  border:1px solid rgba(255,255,255,0.14);
+  background: rgba(0,0,0,0.20);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 18px 50px rgba(0,0,0,0.55);
+}
+.readyDot{
+  width:10px;
+  height:10px;
+  border-radius:99px;
+  background: rgba(80,255,170,0.95);
+  box-shadow: 0 0 18px rgba(80,255,170,0.35);
+}
+.readyTxt{
+  font-weight: 1000;
+  letter-spacing: 0.6px;
+  color: rgba(255,255,255,0.88);
+}
+
 /* ==========================================================
-   COUNTER VIEW + QR VIEW
-   (unchanged minimal – your existing JS handles it)
+   QR TAKEOVER
+========================================================== */
+
+.qrTakeoverFinal{
+  position:relative;
+  z-index:15;
+  height:100%;
+  width:100%;
+  display:grid;
+  grid-template-columns: 0.90fr 1.10fr;
+  align-items:center;
+  gap: 44px;
+  padding: 0 56px;
+}
+
+.qrRightHuge{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  height:100%;
+}
+
+.qrBigWrap{
+  position:relative;
+  width: var(--qrBox);
+  height: var(--qrBox);
+  border-radius: 34px;
+  padding: var(--qrBoxPad);
+  border:1px solid rgba(255,255,255,0.16);
+  background: rgba(0,0,0,0.60);
+  box-shadow: 0 34px 110px rgba(0,0,0,0.72);
+  overflow:hidden;
+  display:grid;
+  place-items:center;
+}
+
+.qrBigImg{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  border-radius: 24px;
+  background:#fff !important;
+  padding: var(--qrInnerPad);
+  filter:none !important;
+}
+
+.qrLeftStack{
+  height: var(--qrBox);
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  align-items:center;
+  text-align:center;
+  gap: 18px;
+  max-width: 560px;
+}
+
+.qrLogoFrame{
+  width: 220px;
+  height: 220px;
+  border-radius: 54px;
+  border:1px solid rgba(255,255,255,0.16);
+  background: #000 !important;
+  display:grid;
+  place-items:center;
+  box-shadow: 0 22px 70px rgba(0,0,0,0.72);
+}
+
+.qrPlatIconBig{
+  width: 70%;
+  height: 70%;
+  object-fit:contain;
+  filter: drop-shadow(0 16px 30px rgba(0,0,0,0.55));
+}
+
+.qrPlatNameFR{
+  font-size: 24px;
+  font-weight: 1000;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.qrPlatNameEN{
+  font-size: 16px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.58);
+  margin-top: 8px;
+}
+
+.qrFR{
+  font-size: 40px;
+  font-weight: 1000;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.qrEN{
+  font-size: 18px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.62);
+  margin-top: 10px;
+}
+
+.qrFooter{
+  margin-top: 4px;
+  font-size: 14px;
+  letter-spacing: 0.7px;
+  color: rgba(255,255,255,0.76);
+  white-space: nowrap;
+}
+
+.qrPulse{
+  position:absolute;
+  inset:-26%;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255,212,0,0.12), rgba(0,0,0,0) 62%);
+  filter: blur(18px);
+  animation: qrBreath 2.2s ease-in-out infinite;
+}
+@keyframes qrBreath{
+  0%,100%{ opacity:0.10; transform:scale(0.98); }
+  50%{ opacity:0.22; transform:scale(1.05); }
+}
+
+.qrSweep{
+  position:absolute;
+  inset:-50% -60%;
+  opacity:0;
+  pointer-events:none;
+  mix-blend-mode: screen;
+  background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0) 42%, rgba(255,212,0,0.35) 50%, rgba(255,255,255,0) 58%, transparent 100%);
+  transform: translateX(-55%) skewX(-16deg);
+}
+.qrCard.sweep .qrSweep{ animation: qrSweepAnim 980ms ease-out forwards; }
+@keyframes qrSweepAnim{
+  0%{ opacity:0; transform:translateX(-55%) skewX(-16deg); }
+  12%{ opacity:1; }
+  100%{ opacity:0; transform:translateX(55%) skewX(-16deg); }
+}
+
+/* ==========================================================
+   COUNTER — minimal (we keep your JS unchanged)
 ========================================================== */
 
 .cardHeader{
@@ -375,6 +662,56 @@ body{
   border:1px solid rgba(255,255,255,0.11);
   background: rgba(0,0,0,0.22);
   backdrop-filter: blur(12px);
+  overflow:hidden;
+}
+
+.platformBlock{ display:flex; align-items:center; gap: 18px; }
+
+.platformIconWrap{
+  width:116px; height:116px;
+  border-radius: 32px;
+  display:grid; place-items:center;
+  background: rgba(0,0,0,0.38);
+  border:1px solid rgba(255,255,255,0.16);
+  overflow:hidden;
+}
+.platformIcon{
+  width:92px;
+  height:92px;
+  object-fit:contain;
+  filter: drop-shadow(0 12px 20px rgba(0,0,0,0.35));
+  transform: translateZ(0);
+}
+
+.labelFR{
+  font-size: 24px;
+  font-weight: 1000;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.labelEN{
+  font-size: 14px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.58);
+}
+
+.miniQR{
+  width:146px;
+  height:146px;
+  border-radius: 26px;
+  background: rgba(0,0,0,0.30);
+  display:grid;
+  place-items:center;
+  padding: 12px;
+}
+.qrSmallImg{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  border-radius: 22px;
+  background:#fff;
+  padding: 10px;
 }
 
 .counter{
@@ -391,8 +728,22 @@ body{
   display:inline-flex;
   align-items:flex-end;
   justify-content:center;
-  font-size: 340px;
+  font-size: clamp(260px, 18.2vw, 360px);
   font-weight: 1000;
   line-height: 0.95;
   text-shadow: 0 28px 64px rgba(0,0,0,0.74);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "kern" 0;
+  letter-spacing: -10px;
 }
+
+.hint{
+  position:absolute;
+  bottom: 12px;
+  left:0; right:0;
+  text-align:center;
+  font-size: 11px;
+  letter-spacing: 0.85px;
+  color: rgba(255,255,255,0.22);
+}
+body.live .hint{ display:none; }
