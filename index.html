@@ -5,20 +5,30 @@
   ✅ FIX: Real tablet-safe scaling done by JS (visualViewport)
   ✅ DEBUG: add ?debug=1 to see safe-frame outlines
   ✅ BUILD STAMP: helps confirm fresh load (anti-cache verification)
+  ✅ ANTI-CACHE: version busts CSS/JS so WebView never loads old files
 ========================================================== -->
 
 <!doctype html>
 <html lang="fr">
 <head>
   <meta charset="utf-8"/>
+
   <meta name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover"/>
+
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#050508">
 
+  <!-- ✅ EXTRA ANTI-CACHE (helps WebView + some browsers) -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
   <title>Compteur+</title>
-  <link rel="stylesheet" href="./style.css"/>
+
+  <!-- ✅ PERMANENT FIX: bust CSS cache -->
+  <link rel="stylesheet" href="./style.css?v=2.0"/>
 </head>
 
 <body>
@@ -228,6 +238,7 @@
     </div>
   </div>
 
-  <script src="./app.js"></script>
+  <!-- ✅ PERMANENT FIX: bust JS cache -->
+  <script src="./app.js?v=2.0"></script>
 </body>
 </html>
