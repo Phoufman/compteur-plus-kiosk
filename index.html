@@ -4,6 +4,7 @@
   Includes: Activation Screen + Counter + QR Takeover
   ✅ FIX: Real tablet-safe scaling done by JS (visualViewport)
   ✅ DEBUG: add ?debug=1 to see safe-frame outlines
+  ✅ BUILD STAMP: helps confirm fresh load (anti-cache verification)
 ========================================================== -->
 
 <!doctype html>
@@ -21,6 +22,9 @@
 </head>
 
 <body>
+  <!-- ✅ BUILD STAMP (VISIBLE LOW OPACITY) -->
+  <div id="buildStamp" class="buildStamp">BUILD 2026-01-13</div>
+
   <div class="stage" id="stage">
     <div class="device" id="device">
 
