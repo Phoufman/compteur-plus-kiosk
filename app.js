@@ -108,7 +108,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const DESIGN_H = 800;
 
   function getViewportSize(){
-    // visualViewport is most accurate on Android when toolbars exist
     const vv = window.visualViewport;
     if(vv && vv.width && vv.height){
       return { w: vv.width, h: vv.height };
@@ -118,25 +117,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function applyScale(){
     const { w, h } = getViewportSize();
-
-    // small safe border to avoid edge rounding clipping
     const SAFE = 12;
 
     const sx = (w - SAFE) / DESIGN_W;
     const sy = (h - SAFE) / DESIGN_H;
     let s = Math.min(sx, sy);
 
-    // clamp
     if(!isFinite(s) || s <= 0) s = 1;
     if(s > 1) s = 1;
 
-    // avoid GPU rounding issues by rounding to 1/1000
     s = Math.floor(s * 1000) / 1000;
-
     document.documentElement.style.setProperty("--uiScale", String(s));
   }
 
-  // apply scale now + on resize/orientation changes
   applyScale();
   window.addEventListener("resize", applyScale);
   window.addEventListener("orientationchange", () => setTimeout(applyScale, 250));
@@ -383,7 +376,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const qrUrl = (CONFIG.activationQrUrl || `https://${CONFIG.activationPortalUrl}` || "https://compteurplus.com").trim();
     if(activationQrImg) activationQrImg.src = qrApiUrl(qrUrl, 700);
 
-    // ✅ READY PILL translation (this is what user sees)
     if(readyTxt) readyTxt.textContent = (lang === "FR") ? "Prêt" : "Ready";
   }
 
@@ -490,7 +482,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("keydown", (e)=>{
     const k = e.key.toLowerCase();
 
-    // views
     if(k==="a") showActivation();
     if(k==="c") showCounter();
     if(k==="q"){
@@ -498,14 +489,11 @@ document.addEventListener("DOMContentLoaded", () => {
       else showQR();
     }
 
-    // lang
     if(k==="l") toggleLang();
 
-    // mode demo/live
     if(k==="d") setMode(mode==="LIVE" ? "DEMO" : "LIVE");
     if(k==="r") rotateEnabled = !rotateEnabled;
 
-    // platforms
     if(k==="i") hotkeySetPlatform("instagram");
     if(k==="f") hotkeySetPlatform("facebook");
     if(k==="g") hotkeySetPlatform("google");
@@ -517,7 +505,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // clickable lang
   langPill?.addEventListener("click", toggleLang);
   langPill?.addEventListener("keydown", (e)=>{
     if(e.key === "Enter" || e.key === " ") toggleLang();
