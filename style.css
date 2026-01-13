@@ -1,10 +1,11 @@
 /* ==========================================================
-  COMPTEUR+ — PLUG & PLAY (HORIZONTAL) — TABLET SAFE v1.1
+  COMPTEUR+ — PLUG & PLAY (HORIZONTAL) — TABLET SAFE v1.2
   ✅ TRUE 1280×800 canvas
   ✅ JS applies scale() correctly (no WebView rounding math bugs)
   ✅ EXTRA SAFE FRAME prevents digit clipping
   ✅ ONE-SHOT premium sizing upgrades for tablet real estate
   ✅ DEBUG overlay via ?debug=1
+  ✅ WEBVIEW FIX: adds -webkit-backdrop-filter
 ========================================================== */
 
 :root{
@@ -22,9 +23,9 @@
   --plat2: rgba(255,212,0,0.07);
 
   /* BIG QR sizing knobs */
-  --qrBox: 635px;      /* ⬆️ bigger */
-  --qrBoxPad: 24px;    /* ⬆️ bigger */
-  --qrInnerPad: 18px;  /* ⬆️ bigger */
+  --qrBox: 635px;
+  --qrBoxPad: 24px;
+  --qrInnerPad: 18px;
 
   /* ✅ SAFE FRAME */
   --safePad: 10px;
@@ -64,6 +65,19 @@ body{
   color:var(--text);
 }
 
+/* ✅ build stamp (helps verify latest version on tablet) */
+.buildStamp{
+  position:fixed;
+  right:14px;
+  bottom:10px;
+  z-index:9999;
+  font-size:10px;
+  letter-spacing:1px;
+  opacity:0.12;
+  pointer-events:none;
+  user-select:none;
+}
+
 /* ==========================================================
    ✅ FIXED DESIGN CANVAS (JS scales it)
 ========================================================== */
@@ -71,9 +85,14 @@ body{
 .stage{
   width:1280px;
   height:800px;
+
   transform-origin:center center;
   transform: translateZ(0) scale(var(--uiScale));
   will-change: transform;
+
+  /* ✅ WEBVIEW anti-blur + GPU safety */
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
 }
 
 .device{
@@ -127,6 +146,8 @@ body{
   font-weight: 1000;
   letter-spacing: 1.4px;
 }
+
+/* hide demo in live */
 body.live #demoBadge{
   visibility:hidden;
   opacity:0;
@@ -166,7 +187,9 @@ body.live #demoBadge{
   border-radius: 999px;
   border:1px solid rgba(255,255,255,0.10);
   background: rgba(0,0,0,0.24);
+
   backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 .pillKey{
   color: rgba(255,255,255,0.35);
@@ -304,10 +327,10 @@ body.live #demoBadge{
   height:100%;
   width:100%;
   display:grid;
-  grid-template-columns: 1.18fr 0.82fr; /* stronger right */
+  grid-template-columns: 1.18fr 0.82fr;
   gap: 46px;
   padding: 56px 66px;
-  align-items:start; /* ✅ key for symmetry */
+  align-items:start;
 }
 
 .activateLeft{
@@ -316,7 +339,7 @@ body.live #demoBadge{
   justify-content:flex-start;
   gap: 18px;
   min-width: 0;
-  padding-top: 6px; /* aligns baseline nicely */
+  padding-top: 6px;
 }
 
 .activateTitle{
@@ -355,7 +378,9 @@ body.live #demoBadge{
   border-radius: 20px;
   border:1px solid rgba(255,255,255,0.10);
   background: rgba(0,0,0,0.18);
+
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .stepNum{
@@ -398,8 +423,11 @@ body.live #demoBadge{
   border-radius: 999px;
   border:1px solid rgba(255,255,255,0.10);
   background: rgba(0,0,0,0.18);
+
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
+
 .portalKey,.langKey{ color: rgba(255,255,255,0.40); font-weight: 1000; font-size: 11px; letter-spacing:1px; }
 .portalDot,.langDot{ opacity:0.45; font-weight: 1000; }
 .portalVal,.langVal{ font-weight: 1000; letter-spacing: 1.2px; font-size:13px; }
@@ -417,8 +445,8 @@ body.live #demoBadge{
   align-items:center;
   justify-content:flex-start;
   gap: 22px;
-  align-self:start;     /* ✅ top aligned */
-  margin-top: 6px;      /* ✅ final symmetry touch */
+  align-self:start;
+  margin-top: 6px;
 }
 
 .codeCard{
@@ -429,7 +457,9 @@ body.live #demoBadge{
   background: rgba(0,0,0,0.18);
   padding: 22px 24px;
   text-align:center;
+
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .codeLabel{
@@ -493,7 +523,10 @@ body.live #demoBadge{
   border-radius: 999px;
   border:1px solid rgba(255,255,255,0.14);
   background: rgba(0,0,0,0.20);
+
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
   box-shadow: 0 18px 50px rgba(0,0,0,0.55);
 }
 .readyDot{
@@ -521,9 +554,9 @@ body.live #demoBadge{
   width:100%;
   display:grid;
   grid-template-columns: 0.90fr 1.10fr;
-  align-items:start;       /* ✅ align */
+  align-items:start;
   gap: 44px;
-  padding: 34px 56px 0;    /* ✅ aligns top */
+  padding: 34px 56px 0;
 }
 
 .qrRightHuge{
@@ -567,7 +600,7 @@ body.live #demoBadge{
   text-align:center;
   gap: 18px;
   max-width: 560px;
-  margin-top: 0; /* aligned */
+  margin-top: 0;
 }
 
 .qrLogoFrame{
@@ -607,7 +640,7 @@ body.live #demoBadge{
   font-weight: 1000;
   letter-spacing: 2px;
   text-transform: uppercase;
-  white-space: nowrap; /* ✅ force 1 line */
+  white-space: nowrap;
 }
 .qrEN{
   font-size: 20px;
@@ -672,7 +705,10 @@ body.live #demoBadge{
   border-radius: 28px;
   border:1px solid rgba(255,255,255,0.11);
   background: rgba(0,0,0,0.22);
+
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
   overflow:hidden;
 }
 
@@ -731,23 +767,22 @@ body.live #demoBadge{
   z-index:11;
   display:grid;
   place-items:center;
-  padding: 0 26px 20px; /* safer horizontal */
-  transform: translateY(32px); /* bring digits down more */
+  padding: 0 26px 20px;
+  transform: translateY(32px);
 }
 
-/* ✅ Bigger digits */
 .counterDigits{
   display:inline-flex;
   align-items:flex-end;
   justify-content:center;
-  font-size: clamp(290px, 20.5vw, 405px); /* ⬆️ */
+  font-size: clamp(290px, 20.5vw, 405px);
   font-weight: 1000;
   line-height: 0.92;
   text-shadow: 0 28px 64px rgba(0,0,0,0.74);
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1, "kern" 0;
   letter-spacing: -12px;
-  padding-right: 14px; /* extra breathing room */
+  padding-right: 14px;
 }
 
 /* Comma styling — lighter white (premium, not gray) */
@@ -756,7 +791,6 @@ body.live #demoBadge{
   text-shadow: 0 22px 56px rgba(0,0,0,0.72) !important;
   filter: drop-shadow(0 10px 22px rgba(0,0,0,0.45));
 }
-
 
 .hint{
   position:absolute;
