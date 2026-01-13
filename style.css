@@ -1,8 +1,9 @@
 /* ==========================================================
-  COMPTEUR+ — PLUG & PLAY (HORIZONTAL) — TABLET SAFE v1.0
+  COMPTEUR+ — PLUG & PLAY (HORIZONTAL) — TABLET SAFE v1.1
   ✅ TRUE 1280×800 canvas
   ✅ JS applies scale() correctly (no WebView rounding math bugs)
   ✅ EXTRA SAFE FRAME prevents digit clipping
+  ✅ ONE-SHOT premium sizing upgrades for tablet real estate
   ✅ DEBUG overlay via ?debug=1
 ========================================================== */
 
@@ -21,11 +22,11 @@
   --plat2: rgba(255,212,0,0.07);
 
   /* BIG QR sizing knobs */
-  --qrBox: 610px;
-  --qrBoxPad: 22px;
-  --qrInnerPad: 16px;
+  --qrBox: 635px;      /* ⬆️ bigger */
+  --qrBoxPad: 24px;    /* ⬆️ bigger */
+  --qrInnerPad: 18px;  /* ⬆️ bigger */
 
-  /* ✅ SAFE FRAME (prevents last digit clipping on Android scaling) */
+  /* ✅ SAFE FRAME */
   --safePad: 10px;
 
   /* JS will set this to scale factor */
@@ -294,7 +295,7 @@ body.live #demoBadge{
 }
 
 /* ==========================================================
-   ACTIVATION
+   ACTIVATION (UPGRADED)
 ========================================================== */
 
 .activateWrap{
@@ -303,10 +304,10 @@ body.live #demoBadge{
   height:100%;
   width:100%;
   display:grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: 34px;
-  padding: 46px 54px;
-  align-items:center;
+  grid-template-columns: 1.18fr 0.82fr; /* stronger right */
+  gap: 46px;
+  padding: 56px 66px;
+  align-items:start; /* ✅ key for symmetry */
 }
 
 .activateLeft{
@@ -315,54 +316,56 @@ body.live #demoBadge{
   justify-content:flex-start;
   gap: 18px;
   min-width: 0;
+  padding-top: 6px; /* aligns baseline nicely */
 }
 
 .activateTitle{
-  font-size: 92px;
+  font-size: 104px;
   font-weight: 1000;
-  letter-spacing: 1px;
+  letter-spacing: 1.2px;
   line-height: 0.92;
   text-transform: uppercase;
-  margin-bottom: 6px;
+  margin:0 0 10px;
 }
 
 .activateSub{
-  margin-top: 10px;
-  font-size: 38px;
+  margin-top: 6px;
+  font-size: 42px;
+  line-height: 1.08;
   font-weight: 900;
   letter-spacing: 1px;
   text-transform: uppercase;
   color: rgba(255,255,255,0.78);
-  max-width: 840px;
+  max-width: 860px;
 }
 
 .activateSteps{
   display:flex;
   flex-direction:column;
-  gap: 14px;
-  margin-top: 8px;
-  max-width: 860px;
+  gap: 16px;
+  margin-top: 14px;
+  max-width: 900px;
 }
 
 .step{
   display:flex;
   align-items:center;
   gap: 14px;
-  padding: 16px 18px;
-  border-radius: 18px;
+  padding: 18px 20px;
+  border-radius: 20px;
   border:1px solid rgba(255,255,255,0.10);
   background: rgba(0,0,0,0.18);
   backdrop-filter: blur(10px);
 }
 
 .stepNum{
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   border-radius: 999px;
   display:grid;
   place-items:center;
   font-weight: 1000;
-  font-size: 14px;
+  font-size: 15px;
   color: rgba(255,212,0,0.95);
   border:1px solid rgba(255,212,0,0.22);
   background: rgba(255,212,0,0.06);
@@ -370,16 +373,16 @@ body.live #demoBadge{
 }
 
 .stepTxt{
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 800;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.35px;
   color: rgba(255,255,255,0.86);
   line-height: 1.25;
   min-width:0;
 }
 
 .activateBottom{
-  margin-top: 10px;
+  margin-top: 14px;
   display:flex;
   align-items:center;
   gap: 14px;
@@ -390,8 +393,8 @@ body.live #demoBadge{
 .langPill{
   display:inline-flex;
   align-items:center;
-  gap: 10px;
-  padding: 12px 14px;
+  gap: 12px;
+  padding: 14px 18px;
   border-radius: 999px;
   border:1px solid rgba(255,255,255,0.10);
   background: rgba(0,0,0,0.18);
@@ -399,10 +402,10 @@ body.live #demoBadge{
 }
 .portalKey,.langKey{ color: rgba(255,255,255,0.40); font-weight: 1000; font-size: 11px; letter-spacing:1px; }
 .portalDot,.langDot{ opacity:0.45; font-weight: 1000; }
-.portalVal,.langVal{ font-weight: 1000; letter-spacing: 1.2px; }
+.portalVal,.langVal{ font-weight: 1000; letter-spacing: 1.2px; font-size:13px; }
 
 .hotkeysLine{
-  margin-top: 8px;
+  margin-top: 10px;
   font-size: 11px;
   letter-spacing: 0.85px;
   color: rgba(255,255,255,0.22);
@@ -412,47 +415,49 @@ body.live #demoBadge{
   display:flex;
   flex-direction:column;
   align-items:center;
-  justify-content:center;
-  gap: 18px;
+  justify-content:flex-start;
+  gap: 22px;
+  align-self:start;     /* ✅ top aligned */
+  margin-top: 6px;      /* ✅ final symmetry touch */
 }
 
 .codeCard{
   width: 100%;
-  max-width: 380px;
-  border-radius: 22px;
+  max-width: 420px;
+  border-radius: 24px;
   border:1px solid rgba(255,255,255,0.12);
   background: rgba(0,0,0,0.18);
-  padding: 18px 20px;
+  padding: 22px 24px;
   text-align:center;
   backdrop-filter: blur(10px);
 }
 
 .codeLabel{
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 1000;
   letter-spacing: 1.4px;
   text-transform: uppercase;
   color: rgba(255,255,255,0.78);
 }
 .codeValue{
-  margin-top: 10px;
-  font-size: 52px;
+  margin-top: 12px;
+  font-size: 60px;
   font-weight: 1000;
-  letter-spacing: 6px;
+  letter-spacing: 7px;
 }
 .codeSub{
-  margin-top: 8px;
-  font-size: 12px;
+  margin-top: 10px;
+  font-size: 13px;
   letter-spacing: 0.8px;
   color: rgba(255,255,255,0.55);
 }
 
 .actQRWrap{
   position:relative;
-  width: 320px;
-  height: 320px;
-  border-radius: 26px;
-  padding: 14px;
+  width: 360px;
+  height: 360px;
+  border-radius: 30px;
+  padding: 16px;
   border:1px solid rgba(255,255,255,0.14);
   background: rgba(0,0,0,0.22);
   box-shadow: 0 28px 90px rgba(0,0,0,0.62);
@@ -464,9 +469,9 @@ body.live #demoBadge{
   width:100%;
   height:100%;
   object-fit:contain;
-  border-radius: 18px;
+  border-radius: 20px;
   background:#fff;
-  padding: 10px;
+  padding: 12px;
 }
 
 .actQrPulse{
@@ -478,13 +483,13 @@ body.live #demoBadge{
   animation: qrBreath 2.2s ease-in-out infinite;
 }
 
-/* ✅ READY PILL */
+/* READY PILL */
 .readyPill{
   margin-top: -2px;
   display:inline-flex;
   align-items:center;
-  gap: 10px;
-  padding: 12px 18px;
+  gap: 12px;
+  padding: 14px 22px;
   border-radius: 999px;
   border:1px solid rgba(255,255,255,0.14);
   background: rgba(0,0,0,0.20);
@@ -502,10 +507,11 @@ body.live #demoBadge{
   font-weight: 1000;
   letter-spacing: 0.6px;
   color: rgba(255,255,255,0.88);
+  font-size:14px;
 }
 
 /* ==========================================================
-   QR TAKEOVER
+   QR TAKEOVER (UPGRADED)
 ========================================================== */
 
 .qrTakeoverFinal{
@@ -515,9 +521,9 @@ body.live #demoBadge{
   width:100%;
   display:grid;
   grid-template-columns: 0.90fr 1.10fr;
-  align-items:center;
+  align-items:start;       /* ✅ align */
   gap: 44px;
-  padding: 0 56px;
+  padding: 34px 56px 0;    /* ✅ aligns top */
 }
 
 .qrRightHuge{
@@ -561,12 +567,13 @@ body.live #demoBadge{
   text-align:center;
   gap: 18px;
   max-width: 560px;
+  margin-top: 0; /* aligned */
 }
 
 .qrLogoFrame{
-  width: 220px;
-  height: 220px;
-  border-radius: 54px;
+  width: 245px;
+  height: 245px;
+  border-radius: 58px;
   border:1px solid rgba(255,255,255,0.16);
   background: #000 !important;
   display:grid;
@@ -575,20 +582,20 @@ body.live #demoBadge{
 }
 
 .qrPlatIconBig{
-  width: 70%;
-  height: 70%;
+  width: 72%;
+  height: 72%;
   object-fit:contain;
   filter: drop-shadow(0 16px 30px rgba(0,0,0,0.55));
 }
 
 .qrPlatNameFR{
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 1000;
   letter-spacing: 2px;
   text-transform: uppercase;
 }
 .qrPlatNameEN{
-  font-size: 16px;
+  font-size: 17px;
   letter-spacing: 1.2px;
   text-transform: uppercase;
   color: rgba(255,255,255,0.58);
@@ -596,22 +603,23 @@ body.live #demoBadge{
 }
 
 .qrFR{
-  font-size: 40px;
+  font-size: 44px;
   font-weight: 1000;
   letter-spacing: 2px;
   text-transform: uppercase;
+  white-space: nowrap; /* ✅ force 1 line */
 }
 .qrEN{
-  font-size: 18px;
+  font-size: 20px;
   letter-spacing: 1.2px;
   text-transform: uppercase;
   color: rgba(255,255,255,0.62);
-  margin-top: 10px;
+  margin-top: 12px;
 }
 
 .qrFooter{
   margin-top: 4px;
-  font-size: 14px;
+  font-size: 15px;
   letter-spacing: 0.7px;
   color: rgba(255,255,255,0.76);
   white-space: nowrap;
@@ -647,7 +655,7 @@ body.live #demoBadge{
 }
 
 /* ==========================================================
-   COUNTER
+   COUNTER (UPGRADED)
 ========================================================== */
 
 .cardHeader{
@@ -723,22 +731,29 @@ body.live #demoBadge{
   z-index:11;
   display:grid;
   place-items:center;
-  padding: 0 34px 22px; /* ✅ EXTRA bottom padding = no clipping */
-  transform: translateY(20px); /* ✅ more conservative than 38px */
+  padding: 0 26px 20px; /* safer horizontal */
+  transform: translateY(32px); /* bring digits down more */
 }
 
+/* ✅ Bigger digits */
 .counterDigits{
   display:inline-flex;
   align-items:flex-end;
   justify-content:center;
-  font-size: clamp(250px, 18vw, 352px);
+  font-size: clamp(290px, 20.5vw, 405px); /* ⬆️ */
   font-weight: 1000;
-  line-height: 0.94;
+  line-height: 0.92;
   text-shadow: 0 28px 64px rgba(0,0,0,0.74);
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1, "kern" 0;
-  letter-spacing: -10px;
-  padding-right: 10px; /* ✅ right side breathing room */
+  letter-spacing: -12px;
+  padding-right: 14px; /* extra breathing room */
+}
+
+/* ✅ Comma is lighter gray */
+.counterDigits .sep{
+  color: rgba(255,255,255,0.34);
+  text-shadow: 0 18px 50px rgba(0,0,0,0.65);
 }
 
 .hint{
