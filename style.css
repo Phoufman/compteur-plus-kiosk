@@ -1,9 +1,8 @@
 /* ==========================================================
-  COMPTEUR+ — FULLY KIOSK HARD-LOCK v1.0
-  ✅ Forces true 1280×800 design canvas
-  ✅ Applies safe-area for Android overlays/notches
-  ✅ Prevents WebView text scaling / zoom nonsense
-  ✅ Fixes: missing last digit, missing TEMP, clipped QR
+  COMPTEUR+ — PLUG & PLAY (HORIZONTAL) — KIOSK FINAL
+  ✅ Fully Kiosk / Android WebView safe
+  ✅ Stable 1280×800 scaling
+  ✅ Activation / Counter / QR fully styled
 ========================================================== */
 
 :root{
@@ -20,11 +19,7 @@
   --plat: rgba(255,212,0,0.16);
   --plat2: rgba(255,212,0,0.07);
 
-  /* Fixed design canvas */
-  --designW: 1280;
-  --designH: 800;
-
-  /* BIG QR */
+  /* BIG QR sizing knobs */
   --qrBox: 610px;
   --qrBoxPad: 22px;
   --qrInnerPad: 16px;
@@ -37,23 +32,13 @@ html,body{
   height:100%;
   margin:0;
   overflow:hidden !important;
-
-  /* kill text autoscaling */
-  -webkit-text-size-adjust: 100% !important;
-  text-size-adjust: 100% !important;
-
-  /* kill tap selection */
-  -webkit-tap-highlight-color: transparent;
-  user-select:none;
-
+  -webkit-text-size-adjust:100% !important;
+  text-size-adjust:100% !important;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
   color:var(--text);
 }
 
-/* ==========================================================
-   ✅ FULLY KIOSK SAFE AREA
-========================================================== */
-
+/* ✅ background */
 body{
   background:
     radial-gradient(1000px 600px at 50% 40%, rgba(255,255,255,0.07), rgba(0,0,0,0) 62%),
@@ -64,48 +49,35 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-
-  /* critical: makes WebView use true full area */
-  padding:
-    env(safe-area-inset-top, 0px)
-    env(safe-area-inset-right, 0px)
-    env(safe-area-inset-bottom, 0px)
-    env(safe-area-inset-left, 0px);
 }
 
-/* ==========================================================
-   ✅ FIXED CANVAS + AUTO SCALE (WebView-proof)
-========================================================== */
-
-.stage{
-  width: calc(var(--designW) * 1px);
-  height: calc(var(--designH) * 1px);
-
-  /* scale stage to fit current screen */
-  transform-origin: center center;
-  transform: scale(
-    min(
-      1,
-      calc(100vw / (var(--designW) * 1px)),
-      calc(100vh / (var(--designH) * 1px))
-    )
-  );
-
+/* ✅ wrapper */
+.kioskWrap{
+  width:100%;
+  height:100%;
   display:flex;
   align-items:center;
   justify-content:center;
 }
 
-.stageInner{
-  width:100%;
-  height:100%;
-  display:flex;
+/* ✅ fixed design stage with scaling */
+.stage{
+  width:1280px;
+  height:800px;
+
+  transform-origin:center center;
+  transform: scale(
+    min(
+      1,
+      calc(100vw / 1280),
+      calc(100vh / 800)
+    )
+  );
 }
 
-/* device MUST be exact 1280×800 canvas */
 .device{
-  width:100%;
-  height:100%;
+  width:1280px;
+  height:800px;
 
   background:
     radial-gradient(1400px 700px at 50% 0%, rgba(255,255,255,0.08), rgba(0,0,0,0) 60%),
@@ -116,7 +88,6 @@ body{
   border:1px solid rgba(255,255,255,0.12);
   border-radius: 34px;
   box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.10);
-
   padding: 18px 24px 16px;
   position:relative;
   overflow:hidden;
@@ -155,13 +126,6 @@ body{
   letter-spacing: 1.4px;
 }
 
-/* LIVE hide badge but keep space */
-body.live #demoBadge{
-  visibility:hidden;
-  opacity:0;
-  pointer-events:none;
-}
-
 .brandCenter{ justify-self:center; }
 
 .brand{
@@ -170,7 +134,6 @@ body.live #demoBadge{
   letter-spacing: -1.2px;
   line-height:1;
 }
-
 .brandPlus{
   color: var(--gold);
   margin-left: 3px;
@@ -180,7 +143,7 @@ body.live #demoBadge{
 
 .pillWeatherBig{
   justify-self:end;
-  display:none;
+  display:flex;
   align-items:center;
   gap: 14px;
   padding: 22px 26px;
@@ -190,8 +153,6 @@ body.live #demoBadge{
   background: rgba(0,0,0,0.24);
   backdrop-filter: blur(6px);
 }
-.pillWeatherBig.show{ display:flex; }
-
 .pillKey{
   color: rgba(255,255,255,0.35);
   font-weight: 1000;
@@ -202,7 +163,7 @@ body.live #demoBadge{
 .pillVal.big{ font-size: 42px; font-weight: 1000; }
 
 /* ==========================================================
-   STAGE + VIEWS
+   MAIN STAGE / VIEWS
 ========================================================== */
 
 .mainStage{
@@ -213,29 +174,15 @@ body.live #demoBadge{
 .view{
   position:absolute;
   inset:0;
-  transition: opacity 560ms cubic-bezier(.2,1,.2,1),
-              transform 560ms cubic-bezier(.2,1,.2,1);
-}
-
-/* Base hidden */
-.viewActivate, .viewCounter, .viewQR{
   opacity:0;
   pointer-events:none;
-  transform: translateY(12px) scale(0.99);
+  transition: opacity 360ms ease;
 }
 
-/* show view */
-.mainStage.showActivate .viewActivate,
-.mainStage.showCounter .viewCounter,
-.mainStage.showQR .viewQR{
-  opacity:1;
-  pointer-events:auto;
-  transform: translateY(0) scale(1);
-}
-
-/* ==========================================================
-   CARD BASE
-========================================================== */
+/* ✅ default view */
+.mainStage.showActivate #viewActivate{ opacity:1; pointer-events:auto; }
+.mainStage.showCounter  #viewCounter{ opacity:1; pointer-events:auto; }
+.mainStage.showQR       #viewQR{ opacity:1; pointer-events:auto; }
 
 .card{
   position:relative;
@@ -248,6 +195,7 @@ body.live #demoBadge{
   isolation:isolate;
 }
 
+/* ambient */
 .ambientGrid{
   position:absolute;
   inset:-40%;
@@ -260,7 +208,6 @@ body.live #demoBadge{
   z-index:1;
   pointer-events:none;
 }
-
 .ambientOrb{
   position:absolute;
   width: 920px; height: 920px;
@@ -291,24 +238,161 @@ body.live #demoBadge{
   opacity:0.06;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
   mix-blend-mode: overlay;
+  z-index:5;
 }
 
 /* ==========================================================
-   ✅ IMPORTANT FIXES FOR TABLET CLIPPING
+   ✅ ACTIVATION VIEW (THE IMPORTANT PART)
 ========================================================== */
 
-/* give counter extra right padding so last digit never clips */
-.counter{ padding: 0 60px !important; }
+.activateWrap{
+  position:relative;
+  z-index:10;
+  height:100%;
+  width:100%;
+  display:grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 34px;
+  padding: 46px 54px;
+  align-items:center;
+}
 
-/* make header never exceed width */
-.cardHeader{ left:18px; right:18px; }
+.activateTitle{
+  font-size: 92px;
+  font-weight: 1000;
+  letter-spacing: 1px;
+  line-height: 0.92;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
 
-/* reduce huge number slightly in case WebView subpixel clips */
+.activateSub{
+  margin-top: 10px;
+  font-size: 38px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.78);
+  max-width: 840px;
+}
+
+.activateSteps{
+  display:flex;
+  flex-direction:column;
+  gap: 14px;
+  margin-top: 18px;
+  max-width: 860px;
+}
+
+.step{
+  display:flex;
+  align-items:center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  border:1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.18);
+  backdrop-filter: blur(10px);
+}
+
+.stepNum{
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  display:grid;
+  place-items:center;
+  font-weight: 1000;
+  font-size: 16px;
+  color: rgba(255,212,0,0.95);
+  border:1px solid rgba(255,212,0,0.22);
+  background: rgba(255,212,0,0.06);
+}
+
+.stepTxt{
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 0.2px;
+  color: rgba(255,255,255,0.88);
+  line-height: 1.25;
+}
+
+.codeCard{
+  width: 100%;
+  max-width: 380px;
+  border-radius: 22px;
+  border:1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.18);
+  padding: 18px 20px;
+  text-align:center;
+  backdrop-filter: blur(10px);
+}
+
+.codeValue{
+  margin-top: 10px;
+  font-size: 52px;
+  font-weight: 1000;
+  letter-spacing: 6px;
+}
+
+.actQRWrap{
+  width: 320px;
+  height: 320px;
+  border-radius: 26px;
+  padding: 14px;
+  border:1px solid rgba(255,255,255,0.14);
+  background: rgba(0,0,0,0.22);
+  box-shadow: 0 28px 90px rgba(0,0,0,0.62);
+  display:grid;
+  place-items:center;
+}
+
+.activationQrImg{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  border-radius: 18px;
+  background:#fff;
+  padding: 10px;
+}
+
+/* ==========================================================
+   COUNTER VIEW + QR VIEW
+   (unchanged minimal – your existing JS handles it)
+========================================================== */
+
+.cardHeader{
+  position:absolute;
+  left: 18px;
+  right: 18px;
+  top: 16px;
+  z-index:12;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 18px;
+  padding: 18px 20px;
+  border-radius: 28px;
+  border:1px solid rgba(255,255,255,0.11);
+  background: rgba(0,0,0,0.22);
+  backdrop-filter: blur(12px);
+}
+
+.counter{
+  position:absolute;
+  inset:0;
+  z-index:11;
+  display:grid;
+  place-items:center;
+  padding: 0 26px;
+  transform: translateY(38px);
+}
+
 .counterDigits{
-  font-size: clamp(240px, 17.5vw, 350px) !important;
+  display:inline-flex;
+  align-items:flex-end;
+  justify-content:center;
+  font-size: 340px;
+  font-weight: 1000;
+  line-height: 0.95;
+  text-shadow: 0 28px 64px rgba(0,0,0,0.74);
 }
-
-/* ==========================================================
-   (KEEP ALL YOUR OTHER SECTIONS BELOW UNCHANGED)
-   ✅ Activation view, QR view, etc.
-========================================================== */
