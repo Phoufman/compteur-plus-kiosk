@@ -1,10 +1,9 @@
 /* ==========================================================
-  COMPTEUR+ — PLUG & PLAY (HORIZONTAL)
+  COMPTEUR+ — PLUG & PLAY (HORIZONTAL) — TABLET SAFE SCALE
   FILE 3/3 — app.js
-  Includes: Activation + Counter + QR Takeover + Hotkeys + Weather
-  ✅ Fix: Hotkey A now always shows activation (adds showActivate)
-  ✅ Fix: Live mode no longer shifts topbar (no display:none override)
-  ✅ Fix: View state is explicit: showActivate / showCounter / showQR
+  ✅ FIX: Pixel-perfect scaling using visualViewport (Android safe)
+  ✅ FIX: “Prêt” translates (readyTxt is now updated)
+  ✅ DEBUG: ?debug=1 shows safe frame + outlines
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -17,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
     qrSizeBig: 1200,
     qrSizeSmall: 320,
 
-    // Activation
     activationPortalUrl: "compteurplus.com",
     activationQrUrl: "https://compteurplus.com",
 
@@ -28,7 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
       google:    { url: "https://search.google.com/local/writereview?placeid=ChIJq7DtZrIfyUwR1Rn7liloi5A" }
     },
 
-    // Weather (works with city OR postal code)
     weather: {
       city: "Blainville",
       postalCode: "",
@@ -55,23 +52,24 @@ document.addEventListener("DOMContentLoaded", () => {
   let qrHideTimer = null;
 
   // ===== DOM
-  const brandPlus   = document.getElementById("brandPlus");
-  const mainStage   = document.getElementById("mainStage");
-  const qrCard      = document.getElementById("qrCard");
-  const counterWrap = document.getElementById("counterWrap");
+  const stage      = document.getElementById("stage");
+  const brandPlus  = document.getElementById("brandPlus");
+  const mainStage  = document.getElementById("mainStage");
+  const qrCard     = document.getElementById("qrCard");
+  const counterWrap= document.getElementById("counterWrap");
 
-  const platformIcon= document.getElementById("platformIcon");
-  const labelFR     = document.getElementById("labelFR");
-  const labelEN     = document.getElementById("labelEN");
-  const counter     = document.getElementById("counter");
+  const platformIcon = document.getElementById("platformIcon");
+  const labelFR      = document.getElementById("labelFR");
+  const labelEN      = document.getElementById("labelEN");
+  const counter      = document.getElementById("counter");
 
-  const qrSmallImg  = document.getElementById("qrSmallImg");
-  const qrBigImg    = document.getElementById("qrBigImg");
+  const qrSmallImg = document.getElementById("qrSmallImg");
+  const qrBigImg   = document.getElementById("qrBigImg");
 
-  const qrFR        = document.getElementById("qrFR");
-  const qrEN        = document.getElementById("qrEN");
-  const qrNoteFR    = document.getElementById("qrNoteFR");
-  const qrNoteEN    = document.getElementById("qrNoteEN");
+  const qrFR     = document.getElementById("qrFR");
+  const qrEN     = document.getElementById("qrEN");
+  const qrNoteFR = document.getElementById("qrNoteFR");
+  const qrNoteEN = document.getElementById("qrNoteEN");
 
   const qrPlatIconBig = document.getElementById("qrPlatIconBig");
   const qrPlatNameFR  = document.getElementById("qrPlatNameFR");
@@ -81,10 +79,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const weatherText = document.getElementById("weatherText");
 
   // Activation DOM
-  const activationCode = document.getElementById("activationCode");
+  const activationCode  = document.getElementById("activationCode");
   const activationQrImg = document.getElementById("activationQrImg");
-  const statusTxt = document.getElementById("statusTxt");
-  const portalUrlText = document.getElementById("portalUrlText");
+  const portalUrlText   = document.getElementById("portalUrlText");
 
   const langPill = document.getElementById("langPill");
   const langVal  = document.getElementById("langVal");
@@ -96,6 +93,54 @@ document.addEventListener("DOMContentLoaded", () => {
   const step3Txt      = document.getElementById("step3Txt");
   const codeLabel     = document.getElementById("codeLabel");
   const codeSub       = document.getElementById("codeSub");
+
+  const readyTxt       = document.getElementById("readyTxt");
+
+  // ===== Debug mode
+  const params = new URLSearchParams(location.search);
+  const DEBUG = params.get("debug") === "1";
+  if(DEBUG) document.body.classList.add("debug");
+
+  // ==========================================================
+  // ✅ SCALE ENGINE (REAL FIX FOR ANDROID / WEBVIEW)
+  // ==========================================================
+  const DESIGN_W = 1280;
+  const DESIGN_H = 800;
+
+  function getViewportSize(){
+    // visualViewport is most accurate on Android when toolbars exist
+    const vv = window.visualViewport;
+    if(vv && vv.width && vv.height){
+      return { w: vv.width, h: vv.height };
+    }
+    return { w: window.innerWidth, h: window.innerHeight };
+  }
+
+  function applyScale(){
+    const { w, h } = getViewportSize();
+
+    // small safe border to avoid edge rounding clipping
+    const SAFE = 12;
+
+    const sx = (w - SAFE) / DESIGN_W;
+    const sy = (h - SAFE) / DESIGN_H;
+    let s = Math.min(sx, sy);
+
+    // clamp
+    if(!isFinite(s) || s <= 0) s = 1;
+    if(s > 1) s = 1;
+
+    // avoid GPU rounding issues by rounding to 1/1000
+    s = Math.floor(s * 1000) / 1000;
+
+    document.documentElement.style.setProperty("--uiScale", String(s));
+  }
+
+  // apply scale now + on resize/orientation changes
+  applyScale();
+  window.addEventListener("resize", applyScale);
+  window.addEventListener("orientationchange", () => setTimeout(applyScale, 250));
+  window.visualViewport?.addEventListener("resize", applyScale);
 
   // ===== Platforms
   const platformsOrder = ["instagram", "facebook", "google", "tiktok"];
@@ -270,7 +315,7 @@ document.addEventListener("DOMContentLoaded", () => {
     startPolling();
   }
 
-  // ===== Views (EXPLICIT)
+  // ===== Views
   function showActivation(){
     if(!mainStage) return;
     mainStage.classList.remove("showQR");
@@ -325,7 +370,7 @@ document.addEventListener("DOMContentLoaded", () => {
     qrTimer = setTimeout(showQR, msBetween(CONFIG.qrMinMinutes, CONFIG.qrMaxMinutes));
   }
 
-  // ===== Activation mock (plug & play demo)
+  // ===== Activation mock
   function randomCode(){
     const n = Math.floor(100000 + Math.random()*900000);
     return String(n).slice(0,3) + " " + String(n).slice(3);
@@ -338,10 +383,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const qrUrl = (CONFIG.activationQrUrl || `https://${CONFIG.activationPortalUrl}` || "https://compteurplus.com").trim();
     if(activationQrImg) activationQrImg.src = qrApiUrl(qrUrl, 700);
 
-    if(statusTxt) statusTxt.textContent = (lang === "FR") ? "Connexion…" : "Connecting…";
-    setTimeout(()=>{
-      if(statusTxt) statusTxt.textContent = (lang === "FR") ? "Prêt" : "Ready";
-    }, 900);
+    // ✅ READY PILL translation (this is what user sees)
+    if(readyTxt) readyTxt.textContent = (lang === "FR") ? "Prêt" : "Ready";
   }
 
   // ===== Language
@@ -407,7 +450,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try{
       const geo = await geoLookup();
       if(!geo){
-        if(weatherPill) weatherPill.classList.remove("show");
+        if(weatherText) weatherText.textContent = "—";
         return;
       }
       const wUrl = `https://api.open-meteo.com/v1/forecast?latitude=${geo.lat}&longitude=${geo.lon}&current=temperature_2m&timezone=auto`;
@@ -417,9 +460,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if(typeof temp !== "number") throw new Error("No temp");
 
       if(weatherText) weatherText.textContent = `${Math.round(temp)}°C`;
-      if(weatherPill) weatherPill.classList.add("show");
     }catch{
-      if(weatherPill) weatherPill.classList.remove("show");
+      if(weatherText) weatherText.textContent = "—";
     }
   }
 
@@ -427,10 +469,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const city = (CONFIG.weather?.city||"").trim();
     const postal = normalizePostal(CONFIG.weather?.postalCode||"");
     if(!city && !postal){
-      if(weatherPill) weatherPill.classList.remove("show");
+      if(weatherText) weatherText.textContent = "—";
       return;
     }
-    if(weatherPill) weatherPill.classList.add("show");
     if(weatherText) weatherText.textContent = "…";
 
     fetchWeather();
@@ -489,7 +530,7 @@ document.addEventListener("DOMContentLoaded", () => {
   applyLanguage();
   renderActivation();
 
-  // default view: activation (plug & play)
+  // default view: activation
   showActivation();
 
   setMode("DEMO");
