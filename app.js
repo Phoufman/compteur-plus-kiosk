@@ -13,8 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
     qrMaxMinutes: 5,
     qrShowSeconds: 12,
 
-    qrSizeBig: 1200,
-    qrSizeSmall: 320,
+    qrSizeBig: 1400,
+    qrSizeSmall: 420,
 
     activationPortalUrl: "compteurplus.com",
     activationQrUrl: "https://compteurplus.com",
