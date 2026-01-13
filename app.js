@@ -235,10 +235,17 @@ document.addEventListener("DOMContentLoaded", () => {
   function formatNumber(v){ return v.toLocaleString("en-US"); }
 
   function renderDigits(str){
-    return `<div class="counterDigits">${
-      [...str].map(ch => ch === "," ? `<span class="digit sep">,</span>` : `<span class="digit">${ch}</span>`).join("")
-    }</div>`;
-  }
+  return `<div class="counterDigits">${
+    [...str].map(ch => {
+      if(ch === ","){
+        // ✅ bulletproof comma styling (inline)
+        return `<span class="digit sep" style="color:rgba(255,255,255,0.72); text-shadow:0 22px 56px rgba(0,0,0,0.72); filter:drop-shadow(0 10px 22px rgba(0,0,0,0.45));">,</span>`;
+      }
+      return `<span class="digit">${ch}</span>`;
+    }).join("")
+  }</div>`;
+}
+
 
   function pulsePlus(){
     if(!brandPlus) return;
