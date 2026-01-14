@@ -1,3 +1,11 @@
+/* ==========================================================
+  COMPTEUR+ — app.js (OPTIMIZED + ANDROID-PROOF v2.2+)
+  ✅ View switching via ADB intents: window.__SET_VIEW__(...)
+  ✅ WebView cut-off fix: multi-pass scale + forced reflow
+  ✅ GUARANTEED comma style (forces full digit re-render on showCounter)
+  ✅ No locale formatting surprises
+========================================================== */
+
 document.addEventListener("DOMContentLoaded", () => {
 
   const CONFIG = {
@@ -37,6 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let rotateEnabled = true;
   const rotateEveryMs = 9000;
+
   let rotateTimer = null;
   let pollTimer = null;
 
@@ -44,11 +53,11 @@ document.addEventListener("DOMContentLoaded", () => {
   let qrHideTimer = null;
 
   // ===== DOM
-  const stage      = document.getElementById("stage");
-  const brandPlus  = document.getElementById("brandPlus");
-  const mainStage  = document.getElementById("mainStage");
-  const qrCard     = document.getElementById("qrCard");
-  const counterWrap= document.getElementById("counterWrap");
+  const stage       = document.getElementById("stage");
+  const brandPlus   = document.getElementById("brandPlus");
+  const mainStage   = document.getElementById("mainStage");
+  const qrCard      = document.getElementById("qrCard");
+  const counterWrap = document.getElementById("counterWrap");
 
   const platformIcon = document.getElementById("platformIcon");
   const labelFR      = document.getElementById("labelFR");
@@ -67,7 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const qrPlatNameFR  = document.getElementById("qrPlatNameFR");
   const qrPlatNameEN  = document.getElementById("qrPlatNameEN");
 
-  const weatherPill = document.getElementById("weatherPill");
   const weatherText = document.getElementById("weatherText");
 
   // Activation DOM
@@ -86,24 +94,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const codeLabel     = document.getElementById("codeLabel");
   const codeSub       = document.getElementById("codeSub");
 
-  const readyTxt       = document.getElementById("readyTxt");
+  const readyTxt = document.getElementById("readyTxt");
 
   // ===== Debug mode
   const params = new URLSearchParams(location.search);
   const DEBUG = params.get("debug") === "1";
-  if(DEBUG) document.body.classList.add("debug");
+  if (DEBUG) document.body.classList.add("debug");
 
   // ==========================================================
-  // ✅ SCALE ENGINE (REAL FIX FOR ANDROID / WEBVIEW)
+  // ✅ SCALE ENGINE (ANDROID/WEBVIEW-PROOF)
   // ==========================================================
   const DESIGN_W = 1280;
   const DESIGN_H = 800;
 
   function getViewportSize(){
     const vv = window.visualViewport;
-    if(vv && vv.width && vv.height){
-      return { w: vv.width, h: vv.height };
-    }
+    if (vv && vv.width && vv.height) return { w: vv.width, h: vv.height };
     return { w: window.innerWidth, h: window.innerHeight };
   }
 
@@ -115,19 +121,37 @@ document.addEventListener("DOMContentLoaded", () => {
     const sy = (h - SAFE) / DESIGN_H;
     let s = Math.min(sx, sy);
 
-    if(!isFinite(s) || s <= 0) s = 1;
-    if(s > 1) s = 1;
+    if (!isFinite(s) || s <= 0) s = 1;
+    if (s > 1) s = 1;
 
     s = Math.floor(s * 1000) / 1000;
     document.documentElement.style.setProperty("--uiScale", String(s));
   }
 
-  applyScale();
-  window.addEventListener("resize", applyScale);
-  window.addEventListener("orientationchange", () => setTimeout(applyScale, 250));
-  window.visualViewport?.addEventListener("resize", applyScale);
+  function forceReflow(){
+    document.body.style.transform = "translateZ(0)";
+    void document.body.offsetHeight;
+    document.body.style.transform = "";
+  }
 
-  // ===== Platforms
+  function stabilizeLayout(){
+    applyScale();
+    forceReflow();
+  }
+
+  stabilizeLayout();
+  window.addEventListener("resize", stabilizeLayout);
+  window.addEventListener("orientationchange", () => setTimeout(stabilizeLayout, 250));
+  window.visualViewport?.addEventListener("resize", stabilizeLayout);
+
+  // ✅ multi-pass stabilizer (fix random WebView cut/crop)
+  setTimeout(stabilizeLayout, 50);
+  setTimeout(stabilizeLayout, 250);
+  setTimeout(stabilizeLayout, 600);
+
+  // ==========================================================
+  // ✅ PLATFORMS
+  // ==========================================================
   const platformsOrder = ["instagram", "facebook", "google", "tiktok"];
   let platformIndex = 0;
 
@@ -174,7 +198,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // ===== Utils
   function currentPlatform(){ return platformsOrder[platformIndex]; }
 
   function qrApiUrl(targetUrl, sizePx){
@@ -183,72 +206,84 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function applyPlatformGlow(name){
     const p = platforms[name];
-    if(!p?.glow) return;
-    document.documentElement.style.setProperty("--plat", p.glow.a);
+    if (!p?.glow) return;
+    document.documentElement.style.setProperty("--plat",  p.glow.a);
     document.documentElement.style.setProperty("--plat2", p.glow.b);
   }
 
   function applyQrForPlatform(name){
     const url = (CONFIG.platformLinks?.[name]?.url || "").trim() || "https://example.com";
-    if(qrSmallImg) qrSmallImg.src = qrApiUrl(url, CONFIG.qrSizeSmall);
-    if(qrBigImg)   qrBigImg.src   = qrApiUrl(url, CONFIG.qrSizeBig);
+    if (qrSmallImg) qrSmallImg.src = qrApiUrl(url, CONFIG.qrSizeSmall);
+    if (qrBigImg)   qrBigImg.src   = qrApiUrl(url, CONFIG.qrSizeBig);
 
     const p = platforms[name];
-    if(!p) return;
+    if (!p) return;
 
-    if(qrFR) qrFR.textContent = p.ctaFR;
-    if(qrEN) qrEN.textContent = p.ctaEN;
-    if(qrNoteFR) qrNoteFR.textContent = p.noteFR;
-    if(qrNoteEN) qrNoteEN.textContent = p.noteEN;
+    if (qrFR)     qrFR.textContent     = p.ctaFR;
+    if (qrEN)     qrEN.textContent     = p.ctaEN;
+    if (qrNoteFR) qrNoteFR.textContent = p.noteFR;
+    if (qrNoteEN) qrNoteEN.textContent = p.noteEN;
 
-    if(qrPlatIconBig) qrPlatIconBig.src = p.icon;
-    if(qrPlatNameFR)  qrPlatNameFR.textContent = p.fr;
-    if(qrPlatNameEN)  qrPlatNameEN.textContent = p.en;
+    if (qrPlatIconBig) qrPlatIconBig.src = p.icon;
+    if (qrPlatNameFR)  qrPlatNameFR.textContent = p.fr;
+    if (qrPlatNameEN)  qrPlatNameEN.textContent = p.en;
   }
 
   function setPlatform(name){
     const p = platforms[name];
-    if(!p) return;
+    if (!p) return;
 
-    if(platformIcon) platformIcon.src = p.icon;
-    if(labelFR) labelFR.textContent = p.fr;
-    if(labelEN) labelEN.textContent = p.en;
+    if (platformIcon) platformIcon.src = p.icon;
+    if (labelFR) labelFR.textContent = p.fr;
+    if (labelEN) labelEN.textContent = p.en;
 
     applyPlatformGlow(name);
     applyQrForPlatform(name);
   }
 
   function rotatePlatform(){
-    if(!rotateEnabled) return;
+    if (!rotateEnabled) return;
     platformIndex = (platformIndex + 1) % platformsOrder.length;
     setPlatform(currentPlatform());
   }
 
-  function formatNumber(v){ return v.toLocaleString("en-US"); }
+  // ==========================================================
+  // ✅ DIGITS (GUARANTEED COMMA STYLE)
+  // ==========================================================
+  function formatNumber(v){
+    // ✅ force ASCII comma every 3 digits (no locale)
+    const s = String(Math.floor(Number(v) || 0));
+    return s.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
 
   function renderDigits(str){
-  return `<div class="counterDigits">${
-    [...str].map(ch => {
-      if(ch === ","){
-        // ✅ bulletproof comma styling (inline)
-        return `<span class="digit sep" style="color:rgba(255,255,255,0.72); text-shadow:0 22px 56px rgba(0,0,0,0.72); filter:drop-shadow(0 10px 22px rgba(0,0,0,0.45));">,</span>`;
-      }
-      return `<span class="digit">${ch}</span>`;
-    }).join("")
-  }</div>`;
-}
+    return `<div class="counterDigits">${
+      [...String(str)].map(ch => {
+        if (ch === ","){
+          // ✅ final comma appearance (light gray)
+          return `<span class="digit sep" style="color:rgba(255,255,255,0.72); text-shadow:0 22px 56px rgba(0,0,0,0.72); filter:drop-shadow(0 10px 22px rgba(0,0,0,0.45));">,</span>`;
+        }
+        return `<span class="digit">${ch}</span>`;
+      }).join("")
+    }</div>`;
+  }
 
+  function forceRenderCounter(){
+    // ✅ makes sure older cached digits NEVER remain on screen
+    if (!counter) return;
+    counter.innerHTML = renderDigits(formatNumber(currentValue));
+  }
 
   function pulsePlus(){
-    if(!brandPlus) return;
+    if (!brandPlus) return;
     brandPlus.classList.remove("pulse");
     void brandPlus.offsetWidth;
     brandPlus.classList.add("pulse");
-    setTimeout(()=> brandPlus.classList.remove("pulse"), 720);
+    setTimeout(() => brandPlus.classList.remove("pulse"), 720);
   }
 
   function microBounce(el){
-    if(!el) return;
+    if (!el) return;
     el.animate(
       [{ transform:"translateY(0)" }, { transform:"translateY(1px)" }, { transform:"translateY(0)" }],
       { duration: 220, easing:"cubic-bezier(.2,1,.2,1)" }
@@ -258,33 +293,34 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateDigits(oldVal, newVal){
     const oldStr = formatNumber(oldVal);
     const newStr = formatNumber(newVal);
-    if(counter) counter.innerHTML = renderDigits(newStr);
+
+    if (counter) counter.innerHTML = renderDigits(newStr);
 
     const nodes = counter ? counter.querySelectorAll(".digit") : [];
     const oldChars = [...oldStr];
     const newChars = [...newStr];
     const maxLen = Math.max(oldChars.length, newChars.length);
 
-    for(let i=0;i<maxLen;i++){
+    for (let i = 0; i < maxLen; i++){
       const oldCh = oldChars[oldChars.length - 1 - i] || "";
       const newCh = newChars[newChars.length - 1 - i] || "";
       const idx = nodes.length - 1 - i;
-      if(idx < 0) continue;
+      if (idx < 0) continue;
 
-      if(newCh !== oldCh && /\d/.test(newCh)){
+      if (newCh !== oldCh && /\d/.test(newCh)){
         const node = nodes[idx];
         node.classList.add("changed");
-        setTimeout(()=> node.classList.remove("changed"), 560);
+        setTimeout(() => node.classList.remove("changed"), 560);
       }
     }
   }
 
   function updateCounter(newValue){
-    if(newValue <= currentValue) return;
+    if (newValue <= currentValue) return;
     updateDigits(currentValue, newValue);
     currentValue = newValue;
 
-    if(!mainStage?.classList.contains("showQR")){
+    if (!mainStage?.classList.contains("showQR")){
       pulsePlus();
       microBounce(counterWrap);
     }
@@ -294,10 +330,8 @@ document.addEventListener("DOMContentLoaded", () => {
     clearInterval(pollTimer);
     const { interval, chance } = settings[mode];
 
-    pollTimer = setInterval(()=>{
-      if(Math.random() < chance){
-        updateCounter(currentValue + 1);
-      }
+    pollTimer = setInterval(() => {
+      if (Math.random() < chance) updateCounter(currentValue + 1);
     }, interval);
   }
 
@@ -307,54 +341,67 @@ document.addEventListener("DOMContentLoaded", () => {
     startPolling();
   }
 
-  // ===== Views
+  // ==========================================================
+  // ✅ VIEWS
+  // ==========================================================
   function showActivation(){
-    if(!mainStage) return;
-    mainStage.classList.remove("showQR");
-    mainStage.classList.remove("showCounter");
+    if (!mainStage) return;
+    mainStage.classList.remove("showQR", "showCounter");
     mainStage.classList.add("showActivate");
     pulsePlus();
+    stabilizeLayout();
   }
 
   function showCounter(){
-    if(!mainStage) return;
-    mainStage.classList.remove("showActivate");
-    mainStage.classList.remove("showQR");
+    if (!mainStage) return;
+    mainStage.classList.remove("showActivate", "showQR");
     mainStage.classList.add("showCounter");
+
+    // ✅ KEY FIX: ALWAYS re-render digits on counter view
+    forceRenderCounter();
+
     microBounce(counterWrap);
+    stabilizeLayout();
   }
 
   function showQR(){
-    if(!mainStage) return;
+    if (!mainStage) return;
+
     applyQrForPlatform(currentPlatform());
 
-    if(qrCard){
+    if (qrCard){
       qrCard.classList.remove("sweep");
       void qrCard.offsetWidth;
       qrCard.classList.add("sweep");
-      setTimeout(()=> qrCard.classList.remove("sweep"), 1100);
+      setTimeout(() => qrCard.classList.remove("sweep"), 1100);
     }
 
     mainStage.classList.remove("showActivate");
     mainStage.classList.add("showQR");
     pulsePlus();
+    stabilizeLayout();
 
     clearTimeout(qrHideTimer);
-    qrHideTimer = setTimeout(hideQR, (Number(CONFIG.qrShowSeconds)||12)*1000);
+    qrHideTimer = setTimeout(hideQR, (Number(CONFIG.qrShowSeconds) || 12) * 1000);
   }
 
   function hideQR(){
-    if(!mainStage) return;
+    if (!mainStage) return;
     mainStage.classList.remove("showQR");
     mainStage.classList.add("showCounter");
+
+    // ✅ ensure counter digits are correct after QR
+    forceRenderCounter();
+
     microBounce(counterWrap);
+    stabilizeLayout();
     scheduleNextQR();
   }
 
   function msBetween(minMinutes, maxMinutes){
-    const min = Math.max(0.5, Number(minMinutes)||2)*60*1000;
-    const max = Math.max(min, Number(maxMinutes)||5)*60*1000;
-    return Math.floor(min + Math.random()*(max-min));
+    const min = Math.max(0.5, Number(minMinutes) || 2) * 60 * 1000;
+    const max = Math.max(min, Number(maxMinutes) || 5) * 60 * 1000;
+    return Math.floor(min + Math.random() * (max - min));
   }
 
   function scheduleNextQR(){
@@ -362,44 +409,63 @@ document.addEventListener("DOMContentLoaded", () => {
     qrTimer = setTimeout(showQR, msBetween(CONFIG.qrMinMinutes, CONFIG.qrMaxMinutes));
   }
 
-  // ===== Activation mock
+  // ==========================================================
+  // ✅ ANDROID INTENT BRIDGE (ADB view commands)
+  // ==========================================================
+  window.__SET_VIEW__ = function(view){
+    try{
+      const v = String(view || "").toLowerCase().trim();
+
+      if (v === "activation") { showActivation(); return; }
+      if (v === "counter")    { showCounter(); return; }
+      if (v === "qr")         { showQR(); return; }
+
+      if (v === "refresh")    { location.reload(); return; }
+    }catch(e){}
+  };
+
+  // ==========================================================
+  // ✅ ACTIVATION
+  // ==========================================================
   function randomCode(){
-    const n = Math.floor(100000 + Math.random()*900000);
+    const n = Math.floor(100000 + Math.random() * 900000);
     return String(n).slice(0,3) + " " + String(n).slice(3);
   }
 
   function renderActivation(){
-    if(portalUrlText) portalUrlText.textContent = CONFIG.activationPortalUrl;
-    if(activationCode) activationCode.textContent = randomCode();
+    if (portalUrlText) portalUrlText.textContent = CONFIG.activationPortalUrl;
+    if (activationCode) activationCode.textContent = randomCode();
 
     const qrUrl = (CONFIG.activationQrUrl || `https://${CONFIG.activationPortalUrl}` || "https://compteurplus.com").trim();
-    if(activationQrImg) activationQrImg.src = qrApiUrl(qrUrl, 700);
+    if (activationQrImg) activationQrImg.src = qrApiUrl(qrUrl, 700);
 
-    if(readyTxt) readyTxt.textContent = (lang === "FR") ? "Prêt" : "Ready";
+    if (readyTxt) readyTxt.textContent = (lang === "FR") ? "Prêt" : "Ready";
   }
 
-  // ===== Language
+  // ==========================================================
+  // ✅ LANGUAGE
+  // ==========================================================
   function applyLanguage(){
-    if(langVal) langVal.textContent = lang;
+    if (langVal) langVal.textContent = lang;
 
-    if(lang === "FR"){
+    if (lang === "FR"){
       document.documentElement.lang = "fr";
-      if(activateTitle) activateTitle.textContent = "ACTIVATION";
-      if(activateSub)   activateSub.textContent   = "BRANCHEZ L’APPAREIL, PUIS ACTIVEZ-LE EN 30 SECONDES.";
-      if(step1Txt) step1Txt.textContent = "Ouvrez le portail Compteur+ sur votre téléphone ou ordinateur.";
-      if(step2Txt) step2Txt.textContent = "Entrez le code d’activation.";
-      if(step3Txt) step3Txt.textContent = "Choisissez votre plateforme et collez le lien de votre réseau social.";
-      if(codeLabel) codeLabel.textContent = "CODE D’ACTIVATION";
-      if(codeSub)   codeSub.textContent   = "Valide pour 10 minutes";
-    }else{
+      if (activateTitle) activateTitle.textContent = "ACTIVATION";
+      if (activateSub)   activateSub.textContent   = "BRANCHEZ L’APPAREIL, PUIS ACTIVEZ-LE EN 30 SECONDES.";
+      if (step1Txt) step1Txt.textContent = "Ouvrez le portail Compteur+ sur votre téléphone ou ordinateur.";
+      if (step2Txt) step2Txt.textContent = "Entrez le code d’activation.";
+      if (step3Txt) step3Txt.textContent = "Choisissez votre plateforme et collez le lien de votre réseau social.";
+      if (codeLabel) codeLabel.textContent = "CODE D’ACTIVATION";
+      if (codeSub)   codeSub.textContent   = "Valide pour 10 minutes";
+    } else {
       document.documentElement.lang = "en";
-      if(activateTitle) activateTitle.textContent = "ACTIVATION";
-      if(activateSub)   activateSub.textContent   = "PLUG THE DEVICE IN, THEN ACTIVATE IT IN 30 SECONDS.";
-      if(step1Txt) step1Txt.textContent = "Open the Compteur+ portal on your phone or computer.";
-      if(step2Txt) step2Txt.textContent = "Enter the activation code.";
-      if(step3Txt) step3Txt.textContent = "Pick your platform and paste your social media link.";
-      if(codeLabel) codeLabel.textContent = "ACTIVATION CODE";
-      if(codeSub)   codeSub.textContent   = "Valid for 10 minutes";
+      if (activateTitle) activateTitle.textContent = "ACTIVATION";
+      if (activateSub)   activateSub.textContent   = "PLUG THE DEVICE IN, THEN ACTIVATE IT IN 30 SECONDS.";
+      if (step1Txt) step1Txt.textContent = "Open the Compteur+ portal on your phone or computer.";
+      if (step2Txt) step2Txt.textContent = "Enter the activation code.";
+      if (step3Txt) step3Txt.textContent = "Pick your platform and paste your social media link.";
+      if (codeLabel) codeLabel.textContent = "ACTIVATION CODE";
+      if (codeSub)   codeSub.textContent   = "Valid for 10 minutes";
     }
   }
 
@@ -409,116 +475,130 @@ document.addEventListener("DOMContentLoaded", () => {
     renderActivation();
   }
 
-  // ===== Hotkeys
+  // ==========================================================
+  // ✅ HOTKEYS
+  // ==========================================================
   function hotkeySetPlatform(name){
     const idx = platformsOrder.indexOf(name);
-    if(idx >= 0){
+    if (idx >= 0){
       platformIndex = idx;
       setPlatform(name);
     }
   }
 
-  // ===== Weather (Open-Meteo)
-  function normalizePostal(pc){
-    return (pc||"").toUpperCase().replace(/[^A-Z0-9]/g,"").trim();
-  }
+  // ==========================================================
+  // ✅ WEATHER (Open-Meteo)
+  // ==========================================================
+  const normalizePostal = (pc) => (pc || "").toUpperCase().replace(/[^A-Z0-9]/g, "").trim();
 
   async function geoLookup(){
-    const city = (CONFIG.weather?.city||"").trim();
-    const postal = normalizePostal(CONFIG.weather?.postalCode||"");
-    if(!city && !postal) return null;
+    const city = (CONFIG.weather?.city || "").trim();
+    const postal = normalizePostal(CONFIG.weather?.postalCode || "");
+    if (!city && !postal) return null;
 
     const q = postal || city;
     const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=1&language=fr&format=json`;
     const res = await fetch(url, { cache:"no-store" });
     const data = await res.json();
     const hit = data?.results?.[0];
-    if(!hit) return null;
+    if (!hit) return null;
     return { lat: hit.latitude, lon: hit.longitude };
   }
 
   async function fetchWeather(){
     try{
       const geo = await geoLookup();
-      if(!geo){
-        if(weatherText) weatherText.textContent = "—";
+      if (!geo){
+        if (weatherText) weatherText.textContent = "—";
         return;
       }
       const wUrl = `https://api.open-meteo.com/v1/forecast?latitude=${geo.lat}&longitude=${geo.lon}&current=temperature_2m&timezone=auto`;
       const res = await fetch(wUrl, { cache:"no-store" });
       const data = await res.json();
       const temp = data?.current?.temperature_2m;
-      if(typeof temp !== "number") throw new Error("No temp");
-
-      if(weatherText) weatherText.textContent = `${Math.round(temp)}°C`;
+      if (typeof temp !== "number") throw new Error("No temp");
+      if (weatherText) weatherText.textContent = `${Math.round(temp)}°C`;
     }catch{
-      if(weatherText) weatherText.textContent = "—";
+      if (weatherText) weatherText.textContent = "—";
     }
   }
 
   function startWeather(){
-    const city = (CONFIG.weather?.city||"").trim();
-    const postal = normalizePostal(CONFIG.weather?.postalCode||"");
-    if(!city && !postal){
-      if(weatherText) weatherText.textContent = "—";
+    const city = (CONFIG.weather?.city || "").trim();
+    const postal = normalizePostal(CONFIG.weather?.postalCode || "");
+    if (!city && !postal){
+      if (weatherText) weatherText.textContent = "—";
       return;
     }
-    if(weatherText) weatherText.textContent = "…";
 
+    if (weatherText) weatherText.textContent = "…";
     fetchWeather();
-    const every = Math.max(10, Number(CONFIG.weather?.refreshMinutes)||20) * 60*1000;
+
+    const every = Math.max(10, Number(CONFIG.weather?.refreshMinutes) || 20) * 60 * 1000;
     setInterval(fetchWeather, every);
   }
 
+  // ==========================================================
+  // ✅ ROTATION
+  // ==========================================================
   function startRotation(){
     clearInterval(rotateTimer);
-    rotateTimer = setInterval(()=>{
-      if(!mainStage?.classList.contains("showQR")) rotatePlatform();
+    rotateTimer = setInterval(() => {
+      if (!mainStage?.classList.contains("showQR")) rotatePlatform();
     }, rotateEveryMs);
   }
 
-  // ===== Key events
-  document.addEventListener("keydown", (e)=>{
+  // ==========================================================
+  // ✅ KEY EVENTS
+  // ==========================================================
+  document.addEventListener("keydown", (e) => {
     const k = e.key.toLowerCase();
 
-    if(k==="a") showActivation();
-    if(k==="c") showCounter();
-    if(k==="q"){
-      if(mainStage?.classList.contains("showQR")) hideQR();
+    if (k === "a") showActivation();
+    if (k === "c") showCounter();
+    if (k === "q"){
+      if (mainStage?.classList.contains("showQR")) hideQR();
       else showQR();
     }
 
-    if(k==="l") toggleLang();
+    if (k === "l") toggleLang();
 
-    if(k==="d") setMode(mode==="LIVE" ? "DEMO" : "LIVE");
-    if(k==="r") rotateEnabled = !rotateEnabled;
+    if (k === "d") setMode(mode === "LIVE" ? "DEMO" : "LIVE");
+    if (k === "r") rotateEnabled = !rotateEnabled;
 
-    if(k==="i") hotkeySetPlatform("instagram");
-    if(k==="f") hotkeySetPlatform("facebook");
-    if(k==="g") hotkeySetPlatform("google");
-    if(k==="t") hotkeySetPlatform("tiktok");
+    if (k === "i") hotkeySetPlatform("instagram");
+    if (k === "f") hotkeySetPlatform("facebook");
+    if (k === "g") hotkeySetPlatform("google");
+    if (k === "t") hotkeySetPlatform("tiktok");
 
-    if(e.code==="Space"){
+    if (e.code === "Space"){
       e.preventDefault();
-      updateCounter(currentValue+1);
+      updateCounter(currentValue + 1);
     }
   });
 
   langPill?.addEventListener("click", toggleLang);
-  langPill?.addEventListener("keydown", (e)=>{
-    if(e.key === "Enter" || e.key === " ") toggleLang();
+  langPill?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") toggleLang();
   });
 
-  // ===== Init
-  if(counter) counter.innerHTML = renderDigits(formatNumber(currentValue));
+  // ==========================================================
+  // ✅ INIT
+  // ==========================================================
+  // platform + labels
   setPlatform(currentPlatform());
 
+  // activation + language
   applyLanguage();
   renderActivation();
+
+  // digits initial
+  forceRenderCounter();
 
   // default view: activation
   showActivation();
 
+  // engines
   setMode("DEMO");
   startPolling();
   startRotation();
