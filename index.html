@@ -11,233 +11,234 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8"/>
+    <meta charset="utf-8"/>
 
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover"/>
 
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#050508">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#050508">
 
-  <!-- ✅ EXTRA ANTI-CACHE (helps WebView + some browsers) -->
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
+    <!-- ✅ EXTRA ANTI-CACHE (helps WebView + some browsers) -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
 
-  <title>Compteur+</title>
+    <title>Compteur+</title>
 
-  <!-- ✅ PERMANENT FIX: bust CSS cache -->
-  <link rel="stylesheet" href="./style.css?v=2.0"/>
+    <!-- ✅ PERMANENT FIX: bust CSS cache -->
+    <link rel="stylesheet" href="./style.css?v=2.1"/>
 </head>
 
 <body>
-  <!-- ✅ BUILD STAMP (VISIBLE LOW OPACITY) -->
-  <div id="buildStamp" class="buildStamp">BUILD 2026-01-13 · COMMA V2.0</div>
-  <div class="stage" id="stage">
+<!-- ✅ BUILD STAMP (VISIBLE LOW OPACITY) -->
+<div id="buildStamp" class="buildStamp">BUILD 2026-01-14 08:00 — APK 2.2</div>
+
+<div class="stage" id="stage">
     <div class="device" id="device">
 
-      <!-- TOP BAR -->
-      <header class="topbarMinimal" id="topbar">
-        <div class="demoBadge" id="demoBadge">
-          <span class="demoDot"></span>
-          <span class="demoTxt">DEMO</span>
-        </div>
-
-        <div class="brandCenter">
-          <div class="brand" aria-label="Compteur Plus">
-            compteur<span class="brandPlus" id="brandPlus">+</span>
-          </div>
-        </div>
-
-        <div class="pillWeatherBig" id="weatherPill">
-          <span class="pillKey">TEMP</span>
-          <span class="pillDot">·</span>
-          <span class="pillVal big" id="weatherText">—</span>
-        </div>
-      </header>
-
-      <!-- MAIN STAGE -->
-      <main class="mainStage" id="mainStage">
-
-        <!-- ACTIVATION VIEW -->
-        <section class="view viewActivate" id="viewActivate" aria-label="Activation">
-          <div class="card activationCard" id="activationCard">
-
-            <div class="ambientGrid"></div>
-            <div class="ambientOrb orbA"></div>
-            <div class="ambientOrb orbB"></div>
-            <div class="glassSheen"></div>
-            <div class="grain"></div>
-
-            <div class="activateWrap">
-
-              <!-- LEFT -->
-              <div class="activateLeft">
-                <div class="activateTitle" id="activateTitle">ACTIVATION</div>
-
-                <div class="activateSub" id="activateSub">
-                  BRANCHEZ L’APPAREIL, PUIS ACTIVEZ-LE EN 30 SECONDES.
-                </div>
-
-                <div class="activateSteps">
-                  <div class="step">
-                    <div class="stepNum">1</div>
-                    <div class="stepTxt" id="step1Txt">Ouvrez le portail Compteur+ sur votre téléphone ou ordinateur.</div>
-                  </div>
-
-                  <div class="step">
-                    <div class="stepNum">2</div>
-                    <div class="stepTxt" id="step2Txt">Entrez le code d’activation.</div>
-                  </div>
-
-                  <div class="step">
-                    <div class="stepNum">3</div>
-                    <div class="stepTxt" id="step3Txt">Choisissez votre plateforme et collez le lien de votre réseau social.</div>
-                  </div>
-                </div>
-
-                <div class="activateBottom">
-                  <div class="portalLine" id="portalLine">
-                    <span class="portalKey">PORTAIL</span>
-                    <span class="portalDot">·</span>
-                    <span class="portalVal" id="portalUrlText">compteurplus.com</span>
-                  </div>
-
-                  <div class="langPill" id="langPill" role="button" tabindex="0" aria-label="Toggle language">
-                    <span class="langKey">LANG</span>
-                    <span class="langDot">·</span>
-                    <span class="langVal" id="langVal">FR</span>
-                  </div>
-                </div>
-
-                <div class="hotkeysLine" id="hotkeysLine">
-                  Hotkeys: A Activation · C Counter · Q QR · I/F/G/T Platforms · L Lang
-                </div>
-              </div>
-
-              <!-- RIGHT -->
-              <div class="activateRight" id="activateRight">
-
-                <div class="codeCard">
-                  <div class="codeLabel" id="codeLabel">CODE D’ACTIVATION</div>
-                  <div class="codeValue" id="activationCode">— — — — — —</div>
-                  <div class="codeSub" id="codeSub">Valide pour 10 minutes</div>
-                </div>
-
-                <div class="actQRWrap">
-                  <img id="activationQrImg" class="activationQrImg" alt="Activation QR"/>
-                  <div class="actQrPulse" aria-hidden="true"></div>
-                </div>
-
-                <!-- ✅ BEAUTIFUL READY PILL -->
-                <div class="readyPill" id="readyPill" aria-label="Status">
-                  <span class="readyDot"></span>
-                  <span class="readyTxt" id="readyTxt">Prêt</span>
-                </div>
-
-              </div>
-
-            </div>
-          </div>
-        </section>
-
-        <!-- COUNTER VIEW -->
-        <section class="view viewCounter" id="viewCounter" aria-label="Counter view">
-          <div class="card counterCard" id="counterWrap">
-
-            <div class="ambientGrid"></div>
-            <div class="ambientOrb orbA"></div>
-            <div class="ambientOrb orbB"></div>
-            <div class="glassSheen"></div>
-            <div class="grain"></div>
-
-            <div class="cardHeader" id="cardHeader">
-              <div class="platformBlock">
-                <div class="platformIconWrap" id="platformIconWrap">
-                  <img id="platformIcon" class="platformIcon" alt="Platform icon"/>
-                </div>
-
-                <div class="platformText">
-                  <div id="labelFR" class="labelFR">ABONNÉS INSTAGRAM</div>
-                  <div id="labelEN" class="labelEN">INSTAGRAM FOLLOWERS</div>
-                </div>
-              </div>
-
-              <div class="miniQR">
-                <img id="qrSmallImg" class="qrSmallImg" alt="QR code small"/>
-              </div>
+        <!-- TOP BAR -->
+        <header class="topbarMinimal" id="topbar">
+            <div class="demoBadge" id="demoBadge">
+                <span class="demoDot"></span>
+                <span class="demoTxt">DEMO</span>
             </div>
 
-            <div class="counter" id="counter" aria-label="Counter digits"></div>
-
-            <div class="hint" id="footerHint">
-              D Demo/Live · R Rotate · I/F/G/T Platforms · Space +1 · Q QR · A Activation
+            <div class="brandCenter">
+                <div class="brand" aria-label="Compteur Plus">
+                    compteur<span class="brandPlus" id="brandPlus">+</span>
+                </div>
             </div>
 
-          </div>
-        </section>
-
-        <!-- QR TAKEOVER VIEW -->
-        <section class="view viewQR" id="viewQR" aria-label="QR takeover">
-          <div class="card qrCard" id="qrCard">
-
-            <div class="ambientGrid"></div>
-            <div class="ambientOrb orbA"></div>
-            <div class="ambientOrb orbB"></div>
-            <div class="glassSheen"></div>
-            <div class="grain"></div>
-
-            <div class="qrTakeoverFinal">
-
-              <!-- LEFT -->
-              <div class="qrLeftStack">
-                <div class="qrLogoBig">
-                  <div class="qrLogoFrame">
-                    <img id="qrPlatIconBig" class="qrPlatIconBig" alt="platform"/>
-                  </div>
-                </div>
-
-                <div class="qrLabelBlock">
-                  <div id="qrPlatNameFR" class="qrPlatNameFR">ABONNÉS INSTAGRAM</div>
-                  <div id="qrPlatNameEN" class="qrPlatNameEN">INSTAGRAM FOLLOWERS</div>
-                </div>
-
-                <div class="qrDirective">
-                  <div class="qrFR" id="qrFR">SCANNEZ POUR SUIVRE</div>
-                  <div class="qrEN" id="qrEN">SCAN TO FOLLOW</div>
-                </div>
-
-                <div class="qrFooter">
-                  <span class="qrNoteFR" id="qrNoteFR">Ouvrez votre caméra et scannez</span>
-                  <span class="qrDot">·</span>
-                  <span class="qrNoteEN" id="qrNoteEN">Open your camera and scan</span>
-                </div>
-              </div>
-
-              <!-- RIGHT -->
-              <div class="qrRightHuge">
-                <div class="qrBigWrap">
-                  <img id="qrBigImg" class="qrBigImg" alt="QR code big"/>
-                  <div class="qrPulse" aria-hidden="true"></div>
-                  <div class="qrSweep" aria-hidden="true"></div>
-                </div>
-              </div>
-
+            <div class="pillWeatherBig" id="weatherPill">
+                <span class="pillKey">TEMP</span>
+                <span class="pillDot">·</span>
+                <span class="pillVal big" id="weatherText">—</span>
             </div>
+        </header>
 
-          </div>
-        </section>
+        <!-- MAIN STAGE -->
+        <main class="mainStage" id="mainStage">
 
-      </main>
+            <!-- ACTIVATION VIEW -->
+            <section class="view viewActivate" id="viewActivate" aria-label="Activation">
+                <div class="card activationCard" id="activationCard">
 
-      <!-- DEBUG OVERLAY (JS toggles) -->
-      <div class="debugOverlay" id="debugOverlay" aria-hidden="true"></div>
+                    <div class="ambientGrid"></div>
+                    <div class="ambientOrb orbA"></div>
+                    <div class="ambientOrb orbB"></div>
+                    <div class="glassSheen"></div>
+                    <div class="grain"></div>
+
+                    <div class="activateWrap">
+
+                        <!-- LEFT -->
+                        <div class="activateLeft">
+                            <div class="activateTitle" id="activateTitle">ACTIVATION</div>
+
+                            <div class="activateSub" id="activateSub">
+                                BRANCHEZ L’APPAREIL, PUIS ACTIVEZ-LE EN 30 SECONDES.
+                            </div>
+
+                            <div class="activateSteps">
+                                <div class="step">
+                                    <div class="stepNum">1</div>
+                                    <div class="stepTxt" id="step1Txt">Ouvrez le portail Compteur+ sur votre téléphone ou ordinateur.</div>
+                                </div>
+
+                                <div class="step">
+                                    <div class="stepNum">2</div>
+                                    <div class="stepTxt" id="step2Txt">Entrez le code d’activation.</div>
+                                </div>
+
+                                <div class="step">
+                                    <div class="stepNum">3</div>
+                                    <div class="stepTxt" id="step3Txt">Choisissez votre plateforme et collez le lien de votre réseau social.</div>
+                                </div>
+                            </div>
+
+                            <div class="activateBottom">
+                                <div class="portalLine" id="portalLine">
+                                    <span class="portalKey">PORTAIL</span>
+                                    <span class="portalDot">·</span>
+                                    <span class="portalVal" id="portalUrlText">compteurplus.com</span>
+                                </div>
+
+                                <div class="langPill" id="langPill" role="button" tabindex="0" aria-label="Toggle language">
+                                    <span class="langKey">LANG</span>
+                                    <span class="langDot">·</span>
+                                    <span class="langVal" id="langVal">FR</span>
+                                </div>
+                            </div>
+
+                            <div class="hotkeysLine" id="hotkeysLine">
+                                Hotkeys: A Activation · C Counter · Q QR · I/F/G/T Platforms · L Lang
+                            </div>
+                        </div>
+
+                        <!-- RIGHT -->
+                        <div class="activateRight" id="activateRight">
+
+                            <div class="codeCard">
+                                <div class="codeLabel" id="codeLabel">CODE D’ACTIVATION</div>
+                                <div class="codeValue" id="activationCode">— — — — — —</div>
+                                <div class="codeSub" id="codeSub">Valide pour 10 minutes</div>
+                            </div>
+
+                            <div class="actQRWrap">
+                                <img id="activationQrImg" class="activationQrImg" alt="Activation QR"/>
+                                <div class="actQrPulse" aria-hidden="true"></div>
+                            </div>
+
+                            <!-- ✅ BEAUTIFUL READY PILL -->
+                            <div class="readyPill" id="readyPill" aria-label="Status">
+                                <span class="readyDot"></span>
+                                <span class="readyTxt" id="readyTxt">Prêt</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- COUNTER VIEW -->
+            <section class="view viewCounter" id="viewCounter" aria-label="Counter view">
+                <div class="card counterCard" id="counterWrap">
+
+                    <div class="ambientGrid"></div>
+                    <div class="ambientOrb orbA"></div>
+                    <div class="ambientOrb orbB"></div>
+                    <div class="glassSheen"></div>
+                    <div class="grain"></div>
+
+                    <div class="cardHeader" id="cardHeader">
+                        <div class="platformBlock">
+                            <div class="platformIconWrap" id="platformIconWrap">
+                                <img id="platformIcon" class="platformIcon" alt="Platform icon"/>
+                            </div>
+
+                            <div class="platformText">
+                                <div id="labelFR" class="labelFR">ABONNÉS INSTAGRAM</div>
+                                <div id="labelEN" class="labelEN">INSTAGRAM FOLLOWERS</div>
+                            </div>
+                        </div>
+
+                        <div class="miniQR">
+                            <img id="qrSmallImg" class="qrSmallImg" alt="QR code small"/>
+                        </div>
+                    </div>
+
+                    <div class="counter" id="counter" aria-label="Counter digits"></div>
+
+                    <div class="hint" id="footerHint">
+                        D Demo/Live · R Rotate · I/F/G/T Platforms · Space +1 · Q QR · A Activation
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- QR TAKEOVER VIEW -->
+            <section class="view viewQR" id="viewQR" aria-label="QR takeover">
+                <div class="card qrCard" id="qrCard">
+
+                    <div class="ambientGrid"></div>
+                    <div class="ambientOrb orbA"></div>
+                    <div class="ambientOrb orbB"></div>
+                    <div class="glassSheen"></div>
+                    <div class="grain"></div>
+
+                    <div class="qrTakeoverFinal">
+
+                        <!-- LEFT -->
+                        <div class="qrLeftStack">
+                            <div class="qrLogoBig">
+                                <div class="qrLogoFrame">
+                                    <img id="qrPlatIconBig" class="qrPlatIconBig" alt="platform"/>
+                                </div>
+                            </div>
+
+                            <div class="qrLabelBlock">
+                                <div id="qrPlatNameFR" class="qrPlatNameFR">ABONNÉS INSTAGRAM</div>
+                                <div id="qrPlatNameEN" class="qrPlatNameEN">INSTAGRAM FOLLOWERS</div>
+                            </div>
+
+                            <div class="qrDirective">
+                                <div class="qrFR" id="qrFR">SCANNEZ POUR SUIVRE</div>
+                                <div class="qrEN" id="qrEN">SCAN TO FOLLOW</div>
+                            </div>
+
+                            <div class="qrFooter">
+                                <span class="qrNoteFR" id="qrNoteFR">Ouvrez votre caméra et scannez</span>
+                                <span class="qrDot">·</span>
+                                <span class="qrNoteEN" id="qrNoteEN">Open your camera and scan</span>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT -->
+                        <div class="qrRightHuge">
+                            <div class="qrBigWrap">
+                                <img id="qrBigImg" class="qrBigImg" alt="QR code big"/>
+                                <div class="qrPulse" aria-hidden="true"></div>
+                                <div class="qrSweep" aria-hidden="true"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+
+        <!-- DEBUG OVERLAY (JS toggles) -->
+        <div class="debugOverlay" id="debugOverlay" aria-hidden="true"></div>
 
     </div>
-  </div>
+</div>
 
-  <!-- ✅ PERMANENT FIX: bust JS cache -->
-  <script src="./app.js?v=2.0"></script>
+<!-- ✅ PERMANENT FIX: bust JS cache -->
+<script src="./app.js?v=2.2"></script>
 </body>
 </html>
